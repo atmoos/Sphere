@@ -6,18 +6,17 @@ namespace ERNI.Test;
 public class ExponentialDecayTest
 {
     [Fact]
-    public void ExponentialDecayDecaysExponentially()
+    public async Task ExponentialDecayDecaysExponentially()
     {
         const Double factor = 2;
-        const Int32 iterations = 8;
+        const Int32 iterations = 5;
         var timeout = TimeSpan.FromMilliseconds(2);
         var actualStates = new List<TimeSpan>(iterations);
         var expectedStates = new List<TimeSpan>(iterations);
         var decay = ExponentialDecay.StartNew(timeout, decayFactor: factor);
         for (Int32 exponent = 0; exponent < iterations; ++exponent) {
-            actualStates.Add(decay.Current);
+            actualStates.Add(await decay);
             expectedStates.Add(Math.Pow(factor, exponent) * timeout);
-            decay.GetAwaiter();
         }
 
         Assert.Equal(expectedStates, actualStates);
@@ -42,7 +41,7 @@ public class ExponentialDecayTest
     {
         var decay = new ExponentialDecay(TimeSpan.FromSeconds(2));
         using var cts = new CancellationTokenSource(millisecondsDelay: 40);
-        var timeout = decay.Start(cts.Token);
+        var timeout = decay.Start(cancellation: cts.Token);
 
         await Assert.ThrowsAsync<TaskCanceledException>(async () => await timeout);
     }

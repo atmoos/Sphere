@@ -2,52 +2,56 @@ using System.Runtime.CompilerServices;
 
 namespace Atmoos.Sphere.Time;
 
-public sealed class ExponentialDecay
+public sealed class ExponentialDecay(in TimeSpan timeout, Double decayFactor = ExponentialDecay.defaultDecay)
 {
     const Double defaultDecay = 2d;
-    private readonly Double decayFactor;
-    private readonly TimeSpan timeout;
-    public ExponentialDecay(in TimeSpan timeout, Double decayFactor = defaultDecay)
-    {
-        this.timeout = timeout;
-        this.decayFactor = DecayFactorGuard(decayFactor);
-    }
-    public static Decay StartNew(in TimeSpan timeout, CancellationToken token = default, Double decayFactor = defaultDecay, Boolean continueOnCapturedContext = true)
-        => new(timeout, DecayFactorGuard(decayFactor), token, continueOnCapturedContext);
-    public Decay Start(CancellationToken token = default, Boolean continueOnCapturedContext = true)
-        => new(this.timeout, this.decayFactor, token, continueOnCapturedContext);
+    private readonly TimeSpan timeout = Guard(timeout);
+    private readonly Double decayFactor = Guard(decayFactor);
+
+    public static Decay StartNew(in TimeSpan timeout, Double decayFactor = defaultDecay, ConfigureAwaitOptions awaitOption = ConfigureAwaitOptions.None, CancellationToken token = default)
+        => new(Guard(timeout), Guard(decayFactor), awaitOption, token);
+    public Decay Start(ConfigureAwaitOptions awaitOption = ConfigureAwaitOptions.None, CancellationToken cancellation = default)
+        => new(in this.timeout, this.decayFactor, awaitOption, cancellation);
 
     public struct Decay
     {
-        private Int32 exponent = 0;
+        private Int32 exponent = -1;
         private readonly Double decay;
         private readonly TimeSpan timeout;
-        private readonly Boolean captureContext;
         private readonly CancellationToken token;
+        private readonly ConfigureAwaitOptions awaitOption;
         public readonly Int32 Iteration => this.exponent;
-        public readonly TimeSpan Current => this.timeout * Math.Pow(this.decay, this.exponent);
-        internal Decay(in TimeSpan timeout, Double decayFactor, CancellationToken token, Boolean captureContext)
+        internal Decay(in TimeSpan timeout, Double decayFactor, ConfigureAwaitOptions awaitOptions, CancellationToken token)
         {
             this.token = token;
             this.timeout = timeout;
             this.decay = decayFactor;
-            this.captureContext = captureContext;
+            this.awaitOption = awaitOptions;
         }
 
-        public ConfiguredTaskAwaitable.ConfiguredTaskAwaiter GetAwaiter()
+        public ConfiguredTaskAwaitable<TimeSpan>.ConfiguredTaskAwaiter GetAwaiter()
         {
-            // Exponential decay, means exponentially growing timeouts.
-            var timeout = this.timeout * Math.Pow(this.decay, this.exponent++);
-            return Task.Delay(timeout, this.token).ConfigureAwait(this.captureContext).GetAwaiter();
+            return Delay(this.timeout * Math.Pow(this.decay, Interlocked.Increment(ref this.exponent)), this.token).ConfigureAwait(this.awaitOption).GetAwaiter();
+
+            static async Task<TimeSpan> Delay(TimeSpan timeout, CancellationToken token)
+            {
+                await Task.Delay(timeout, token).ConfigureAwait(false);
+                return timeout;
+            }
         }
     }
 
-    static Double DecayFactorGuard(Double decayFactor)
+    private static Double Guard(Double decayFactor) => Guard(decayFactor, 1d, nameof(decayFactor));
+
+    private static TimeSpan Guard(TimeSpan timeout) => Guard(timeout, TimeSpan.Zero);
+
+    private static T Guard<T>(T parameter, T lowerLimit, [CallerArgumentExpression(nameof(parameter))] String? name = default)
+        where T : IComparable<T>
     {
-        if (decayFactor > 1) {
-            return decayFactor;
+        if (parameter.CompareTo(lowerLimit) > 0) {
+            return parameter;
         }
-        String msg = $"Exponential decay only works for decay factors strictly greater than one. Received: {decayFactor:g4}";
-        throw new ArgumentOutOfRangeException(nameof(decayFactor), msg);
+        String msg = $"Exponential decay only works for a {name} strictly greater than {lowerLimit}. Received: {parameter}";
+        throw new ArgumentOutOfRangeException(name, parameter, msg);
     }
 }
