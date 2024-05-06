@@ -1,0 +1,44 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: Build & Test .NET
+
+on:
+  pull_request:
+    branches: [ "main" ]
+    paths-ignore:
+      - '**/*.md'
+      - '.github/**'
+      - '.gitignore'
+      - '.gitattributes'
+      - 'documentation/**'
+
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_NOLOGO: true
+  DotNetVersion: 8.0.x
+
+defaults:
+  run:
+    working-directory: source
+
+jobs:
+  tests:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    
+    runs-on: ${{matrix.os}}
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DotNetVersion }}
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    - name: Test
+      run: dotnet test --configuration Release --no-build --verbosity normal
