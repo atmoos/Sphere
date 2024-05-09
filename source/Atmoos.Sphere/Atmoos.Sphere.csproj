@@ -3,8 +3,8 @@
   <Import Project="../Atmoos.Sphere.Pack.targets" />
   
   <PropertyGroup>
-    <PackageId>Atmoos.Sphere</PackageId>
     <Version>0.1.0</Version>
+    <Description>Atmoos Sphere: Utilities, mechanisms, and extension methods.</Description>
   </PropertyGroup>
 
 </Project>

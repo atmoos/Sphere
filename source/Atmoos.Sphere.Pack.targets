@@ -8,7 +8,7 @@
     <Copyright>Thomas Kägi</Copyright>
     <PackageProjectUrl>https://github.com/atmoos/Sphere</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>utilities, mechanisms, extensions</PackageTags>
+    <PackageTags>utilities, mechanisms, extension methods, extensions</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReleaseNotes>Please see: https://github.com/atmoos/Sphere/releases</PackageReleaseNotes>
     <PackageReadmeFile>readme.md</PackageReadmeFile>
