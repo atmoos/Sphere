@@ -7,11 +7,10 @@ public sealed class ExponentialDecay(in TimeSpan timeout, Double decayFactor = E
     const Double defaultDecay = 2d;
     private readonly TimeSpan timeout = Guard(timeout);
     private readonly Double decayFactor = Guard(decayFactor);
-
-    public static Decay StartNew(in TimeSpan timeout, Double decayFactor = defaultDecay, ConfigureAwaitOptions awaitOption = ConfigureAwaitOptions.None, CancellationToken token = default)
-        => new(Guard(timeout), Guard(decayFactor), awaitOption, token);
     public Decay Start(ConfigureAwaitOptions awaitOption = ConfigureAwaitOptions.None, CancellationToken cancellation = default)
         => new(in this.timeout, this.decayFactor, awaitOption, cancellation);
+    public static Decay StartNew(in TimeSpan timeout, Double decayFactor = defaultDecay, ConfigureAwaitOptions awaitOption = ConfigureAwaitOptions.None, CancellationToken token = default)
+        => new(Guard(timeout), Guard(decayFactor), awaitOption, token);
 
     public struct Decay
     {

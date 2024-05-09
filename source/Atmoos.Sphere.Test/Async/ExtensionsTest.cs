@@ -97,7 +97,7 @@ public class ExtensionsTest
         }
     }
 
-    private static async Task<Int32> IdentifiableDelay(Int32 id, Int32 scaling = 10)
+    private static async Task<Int32> IdentifiableDelay(Int32 id, Int32 scaling = 16)
     {
         await Task.Delay(scaling * (id + 1)).ConfigureAwait(false);
         return id;
