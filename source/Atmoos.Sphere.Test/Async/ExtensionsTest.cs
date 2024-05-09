@@ -34,7 +34,7 @@ public class ExtensionsTest
         for (index = 0; index < indexOfFaultyTask; ++index) {
             unorderedTasks.Add(IdentifiableDelay(30 + index, 1));
         }
-        unorderedTasks.Add(DelayedFaultingTask(50));
+        unorderedTasks.Add(DelayedFailingTask(50));
         for (index = indexOfFaultyTask + 1; index < count; ++index) {
             unorderedTasks.Add(IdentifiableDelay(70 + index, 1));
         }
@@ -42,8 +42,8 @@ public class ExtensionsTest
         index = 0;
         String throws = "Throw";
         String noThrows = "No Throw";
-        List<String> actualNews = new List<String>();
-        List<String> expectedNews = new List<String>();
+        List<String> actualNews = [];
+        List<String> expectedNews = [];
         foreach (Task<Int32> orderedTask in unorderedTasks.OrderByCompletion()) {
             expectedNews.Add(noThrows);
             try {
@@ -79,8 +79,8 @@ public class ExtensionsTest
             cancellation.CancelAfter(50);
             String cancels = "cancelled";
             String completes = "completed";
-            List<String> actualNews = new List<String>();
-            List<String> expectedNews = new List<String>();
+            List<String> actualNews = [];
+            List<String> expectedNews = [];
             foreach (Task<Int32> orderedTask in unorderedTasks.OrderByCompletion()) {
                 expectedNews.Add(completes);
                 try {
@@ -103,7 +103,7 @@ public class ExtensionsTest
         return id;
     }
 
-    private static async Task<Int32> DelayedFaultingTask(Int32 delayMs)
+    private static async Task<Int32> DelayedFailingTask(Int32 delayMs)
     {
         await Task.Delay(delayMs).ConfigureAwait(false);
         throw new InvalidOperationException("Foo!");
