@@ -4,8 +4,6 @@ A library that mainly contains mechanisms, often exposed as extension methods.
 
 ## Async
 
-Mechanisms that target asynchronous patterns.
-
 ### General Asynchronous Mechanisms
 
 - Yielding back to a configurable synchronisation context using `ContextFlow`.
@@ -20,10 +18,18 @@ Mechanisms that target asynchronous patterns.
 
 ## Time
 
-Mechanisms that target time based patterns.
-
 - Generation of exponentially growing delays in an easy to consume asynchronous API
   - Exponential back-off comes to mind for retry mechanisms.
+
+## Text
+
+- Extension methods on `TextWriter` & `TextReader`.
+- Extension methods to insert a given section of text into an existing larger piece of text.
+  - It's inserted given a parametrisable line mark.
+  - Supports:
+    - `TextReader` & `TextWriter` pairs
+    - Insertion into an existing file, given by a `FileInfo` instance.
+  - In asynchronous and synchronous variants.
 
 ## Sync
 

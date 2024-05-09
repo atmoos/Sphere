@@ -5,15 +5,14 @@ namespace Atmoos.Sphere.Text;
 public static class Extensions
 {
     /// <summary>
-    /// Inserts the lines into the destination stream at the line marked by the tag.
+    /// Inserts a <paramref name="section"/> of text into the <paramref name="file"/> at the line marked by the <paramref name="tag"/>.
     /// </summary>
-    /// <param name="destination">The destination stream.</param>
-    /// <param name="source">The current lines into which <paramref name="insert"/> is to be inserted.</param>
+    /// <param name="file">The file in which <paramref name="section"/> is to be replaced.</param>
     /// <param name="tag">The line mark indicating where to insert the text.</param>
-    /// <param name="insert">The text that is to be inserted.</param>
-    public static void InsertText(this FileInfo file, in LineMark tag, IEnumerable<String> insert)
+    /// <param name="section">The text that is to be inserted.</param>
+    public static void InsertSection(this FileInfo file, in LineMark tag, IEnumerable<String> section)
     {
-        String copy = Impl(file, in tag, insert);
+        String copy = Impl(file, in tag, section);
         File.Move(copy, file.FullName, overwrite: true);
 
         static String Impl(FileInfo file, in LineMark tag, IEnumerable<String> lines)
@@ -21,21 +20,21 @@ public static class Extensions
             var copyName = $"{file.FullName}.tmp";
             using var source = file.OpenText();
             using var temporary = File.CreateText(copyName);
-            temporary.InsertText(source, in tag, lines);
+            source.InsertSection(temporary, in tag, lines);
             return copyName;
         }
     }
+
     /// <summary>
-    /// Inserts the lines into the destination stream at the line marked by the tag.
+    /// Inserts a <paramref name="section"/> of text into the <paramref name="file"/> at the line marked by the <paramref name="tag"/>.
     /// </summary>
-    /// <param name="destination">The destination stream.</param>
-    /// <param name="source">The current lines into which <paramref name="insert"/> is to be inserted.</param>
+    /// <param name="file">The file in which <paramref name="section"/> is to be replaced.</param>
     /// <param name="tag">The line mark indicating where to insert the text.</param>
-    /// <param name="insert">The text that is to be inserted.</param>
+    /// <param name="section">The text that is to be inserted.</param>
     /// <param name="token">The cancellation token.</param>
-    public static async Task InsertTextAsync(this FileInfo file, LineMark tag, IEnumerable<String> insert, CancellationToken token = default)
+    public static async Task InsertSectionAsync(this FileInfo file, LineMark tag, IEnumerable<String> section, CancellationToken token = default)
     {
-        String copy = await Impl(file, tag, insert, token).ConfigureAwait(false);
+        String copy = await Impl(file, tag, section, token).ConfigureAwait(false);
         File.Move(copy, file.FullName, overwrite: true);
 
         static async Task<String> Impl(FileInfo file, LineMark tag, IEnumerable<String> lines, CancellationToken token)
@@ -43,33 +42,31 @@ public static class Extensions
             var copyName = $"{file.FullName}.tmp";
             using var source = file.OpenText();
             using var temporary = File.CreateText(copyName);
-            await temporary.InsertTextAsync(source, in tag, lines, token).ConfigureAwait(false);
+            await source.InsertSectionAsync(temporary, in tag, lines, token).ConfigureAwait(false);
             return copyName;
         }
     }
 
     /// <summary>
-    /// Inserts the lines into the destination stream at the line marked by the tag.
+    /// Inserts a <paramref name="section"/> of text into the destination stream at the line marked by the tag.
     /// </summary>
+    /// <param name="source">The current lines into which <paramref name="section"/> is to be inserted.</param>
     /// <param name="destination">The destination stream.</param>
-    /// <param name="source">The current lines into which <paramref name="insert"/> is to be inserted.</param>
     /// <param name="tag">The line mark indicating where to insert the text.</param>
-    /// <param name="insert">The text that is to be inserted.</param>
-    public static void InsertText(this TextWriter destination, TextReader source, in LineMark tag, IEnumerable<String> insert)
-     => destination.WriteLines(Insert.Text(source.ReadLines(), in tag, insert));
+    /// <param name="section">The text that is to be inserted.</param>
+    public static void InsertSection(this TextReader source, TextWriter destination, in LineMark tag, IEnumerable<String> section)
+        => destination.WriteLines(Insert.Section(source.ReadLines(), in tag, section));
 
     /// <summary>
-    /// Inserts the lines into the destination stream at the line marked by the tag.
+    /// Inserts a <paramref name="section"/> of text into the destination stream at the line marked by the tag.
     /// </summary>
+    /// <param name="source">The current lines into which <paramref name="section"/> is to be inserted.</param>
     /// <param name="destination">The destination stream.</param>
-    /// <param name="source">The current lines into which <paramref name="insert"/> is to be inserted.</param>
     /// <param name="tag">The line mark indicating where to insert the text.</param>
-    /// <param name="insert">The text that is to be inserted.</param>
+    /// <param name="section">The text that is to be inserted.</param>
     /// <param name="token">The cancellation token.</param>
-    public static Task InsertTextAsync(this TextWriter destination, TextReader source, in LineMark tag, IEnumerable<String> insert, CancellationToken token = default)
-    {
-        return destination.WriteLinesAsync(Insert.Text(source.ReadLinesAsync(token), in tag, insert, token), token);
-    }
+    public static Task InsertSectionAsync(this TextReader source, TextWriter destination, in LineMark tag, IEnumerable<String> section, CancellationToken token = default)
+        => destination.WriteLinesAsync(Insert.Section(source.ReadLinesAsync(token), in tag, section, token), token);
 
     public static void WriteLines(this TextWriter writer, IEnumerable<String> lines)
     {
@@ -77,6 +74,7 @@ public static class Extensions
             writer.WriteLine(line);
         }
     }
+
     public static async Task WriteLinesAsync(this TextWriter writer, IAsyncEnumerable<String> lines, CancellationToken token = default)
     {
         Task write = Task.CompletedTask;

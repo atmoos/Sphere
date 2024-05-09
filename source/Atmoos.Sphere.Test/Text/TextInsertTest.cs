@@ -16,13 +16,14 @@ public class TextInsertTest
                                      And more lines
                                      than before :-)
                                     """;
+
     [Fact]
-    public void InsertTextReplacesTextAtSpecifiedLineMark()
+    public void InsertSectionWithTextIoReplacesTextAtSpecifiedLineMark()
     {
         var destination = new StringWriter();
         var source = new StringReader(Text(mark, toReplace));
 
-        destination.InsertText(source, mark, toInsert.Split(Environment.NewLine));
+        source.InsertSection(destination, mark, toInsert.Split(Environment.NewLine));
 
         var expected = Text(mark, toInsert);
         var actual = destination.ToString();
@@ -30,14 +31,33 @@ public class TextInsertTest
     }
 
     [Fact]
-    public async Task InsertTextAsyncReplacesTextAtSpecifiedLineMark()
+    public void InsertSectionInFileReplacesTextAtSpecifiedLineMark()
     {
         var source = new FileInfo("Test.md");
         try {
 
+            File.WriteAllText(source.FullName, Text(mark, toReplace));
+
+            source.InsertSection(mark, toInsert.Split(Environment.NewLine));
+
+            var expected = Text(mark, toInsert);
+            var actual = File.ReadAllText(source.FullName);
+            Assert.Equal(expected, actual);
+        }
+        finally {
+            source.Delete();
+        }
+    }
+
+    [Fact]
+    public async Task InsertSectionInFileAsyncReplacesTextAtSpecifiedLineMark()
+    {
+        var source = new FileInfo("AsyncTest.md");
+        try {
+
             await File.WriteAllTextAsync(source.FullName, Text(mark, toReplace));
 
-            await source.InsertTextAsync(mark, toInsert.Split(Environment.NewLine));
+            await source.InsertSectionAsync(mark, toInsert.Split(Environment.NewLine));
 
             var expected = Text(mark, toInsert);
             var actual = await File.ReadAllTextAsync(source.FullName);
@@ -46,11 +66,10 @@ public class TextInsertTest
         finally {
             source.Delete();
         }
-
     }
 
     [Fact]
-    public async Task InsertTextAsyncCanBeCancelled()
+    public async Task InsertSectionAsyncCanBeCancelled()
     {
         const Int32 cancelAtLine = 12;
         const String lineToInsert = "This will be inserted.";
@@ -59,7 +78,7 @@ public class TextInsertTest
         var destination = new StringWriter();
         var lotsOfLines = TriggerCancellation(InfiniteLinesOf(lineToInsert), cancelAtLine, cts);
 
-        await Assert.ThrowsAsync<TaskCanceledException>(async () => await destination.InsertTextAsync(source, mark, lotsOfLines, cts.Token));
+        await Assert.ThrowsAsync<TaskCanceledException>(async () => await source.InsertSectionAsync(destination, mark, lotsOfLines, cts.Token));
 
         var actual = destination.ToString();
 
