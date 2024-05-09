@@ -5,6 +5,9 @@ on:
     branches: [ "main" ]
     paths-ignore:
       - '**/*.md'
+      - '**/*.sln'
+      - '**/*.props'
+      - '**/*.targets'
       - '.github/**'
       - '.gitignore'
       - '.gitattributes'
