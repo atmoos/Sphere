@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Atmoos.Sphere.Build.props" />
+  <Import Project="../Atmoos.Sphere.Pack.targets" />
+  
+  <PropertyGroup>
+    <PackageId>Atmoos.Sphere.BenchmarkDotNet</PackageId>
+    <Version>0.1.0</Version>
+    <PackageTags>benchmark, benchmarking</PackageTags>
+  </PropertyGroup>
+
+</Project>
