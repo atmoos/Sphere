@@ -12,7 +12,7 @@ public class ContextFlowTest
         Assert.NotNull(expected);
         await Task.Yield();
         SetContext(new SomeOtherContext());
-        await AsynchronousStuff().ConfigureAwait(false);
+        await AsynchronousStuff();
         Assert.NotEqual(expected, SynchronizationContext.Current);
         await flow;
         Assert.Same(expected, SynchronizationContext.Current);
@@ -27,7 +27,7 @@ public class ContextFlowTest
         var flow = ContextFlow.Current();
         var task = Task.Run(() => number = expectedNumber); // simulate stuff...
         await Task.Yield(); // and more stuff
-        await task.ConfigureAwait(false);
+        await task;
         await flow;
         Assert.Same(expected, SynchronizationContext.Current);
         Assert.Equal(expectedNumber, number); // somewhat silly sanity check
@@ -41,7 +41,7 @@ public class ContextFlowTest
         var flow = ContextFlow.Current();
         for (Int32 iteration = 0; iteration < iterations; ++iteration) {
             SetContext(iteration % 2 == 0 ? new SomeOtherContext() : new AnotherContext());
-            await AsynchronousStuff().ConfigureAwait(false);
+            await AsynchronousStuff();
             Assert.NotEqual(expected, SynchronizationContext.Current);
             await flow; // we're awaiting the same context over and over!
             Assert.Same(expected, SynchronizationContext.Current);

@@ -1,0 +1,25 @@
+<!-- See also: https://learn.microsoft.com/en-us/nuget/create-packages/package-authoring-best-practices -->
+
+<Project>
+  <!-- Packaging info common to all projects within the atmoos sphere project -->
+
+  <PropertyGroup>
+    <Authors>Thomas Kägi</Authors>
+    <Copyright>Thomas Kägi</Copyright>
+    <PackageProjectUrl>https://github.com/atmoos/Sphere</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>utilities, mechanisms, extensions</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReleaseNotes>Please see: https://github.com/atmoos/Sphere/releases</PackageReleaseNotes>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="readme.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DotNet.ReproducibleBuilds" Version="1.1.1" PrivateAssets="All" />
+  </ItemGroup>
+
+</Project>

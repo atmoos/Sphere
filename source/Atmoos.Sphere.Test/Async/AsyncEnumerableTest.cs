@@ -39,7 +39,7 @@ public class AsyncEnumerableTest
         const Int32 cancelAfter = 4;
         var values = Enumerable.Range(0, 1234);
         var actual = new List<Int32>();
-        var cts = new CancellationTokenSource();
+        using var cts = new CancellationTokenSource();
         await foreach (var value in AsyncEnumerable.FromEnvelope<Int32>((u, ct) => Envelope(values, u, ct)).WithCancellation(cts.Token)) {
             actual.Add(value);
             if (actual.Count == cancelAfter) {
@@ -48,12 +48,16 @@ public class AsyncEnumerableTest
         }
 
         // As the Envelope method does not make use of the token, we expect no exception to occur!
-        Assert.Equal(cancelAfter, actual.Count);
+        // and the enumeration to stop after exactly 'cancelAfter' elements.
+        Assert.Equal(values.Take(cancelAfter), actual);
     }
 
     [Fact]
     public async Task EnumerationCanBeCancelledOnUnCancellableEnvelope()
     {
+
+        await Assert.ThrowsAsync<TaskCanceledException>(CancelsWithTaskCancelException);
+
         static async Task CancelsWithTaskCancelException()
         {
             var cancellationTimeout = TimeSpan.FromMilliseconds(21);
@@ -63,8 +67,6 @@ public class AsyncEnumerableTest
                 Assert.Fail("Failed the sanity check.");
             }
         }
-
-        await Assert.ThrowsAsync<TaskCanceledException>(CancelsWithTaskCancelException);
 
         static async Task UnCancellableNonEndingEnvelope(Action<Int32> _)
         { // Also, this envelope is empty, as the provided action is never invoked...
