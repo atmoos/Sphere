@@ -13,7 +13,7 @@ env:
   Prefix: 'sphere'
   Project: 'source/Atmoos.Sphere/Atmoos.Sphere.csproj'
   DotNetVersion: 8.0.x
-  NugetKey: ${{ secrets.CREATENEWNUGETPACKAGE }}
+  NugetKey: ${{ secrets.PUSH_NEW_SPHERE_VERSION }}
 
 jobs:
   publish:
