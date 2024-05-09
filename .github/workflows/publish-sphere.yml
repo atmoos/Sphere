@@ -19,13 +19,14 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
+      - name: Checkout
         uses: actions/checkout@v4
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DotNetVersion }}
-      - uses: tedd/publish-nuget-neo@v1
+      - name: Publish
+        uses: tedd/publish-nuget-neo@v1
         with:
           NUGET_KEY: ${{env.NugetKey}}
           PROJECT_FILE_PATH: ${{env.Project}}
