@@ -1,3 +1,5 @@
+using System.Reflection;
+using Atmoos.Sphere.Text;
 using BenchmarkDotNet.Exporters;
 using BenchmarkDotNet.Loggers;
 using BenchmarkDotNet.Reports;
@@ -6,80 +8,55 @@ namespace Atmoos.Sphere.BenchmarkDotNet;
 
 public static class Exporter
 {
-    private static readonly String mark = "/* Summary *";
     private static readonly ILogger logger = new Logger();
+    private static readonly LineMark mark = new() { Tag = "/*", Name = " Summary *" };
 
-    public static void Export(IEnumerable<Summary> summaries)
+    public static async Task Export(this Assembly assembly, IEnumerable<Summary> summaries)
     {
-        var sourceFiles = FindSourceFiles();
+        var sourceFiles = FindSourceFiles(assembly);
         foreach (var summary in summaries) {
-            Export(summary, sourceFiles);
+            await Export(summary, sourceFiles).ConfigureAwait(false);
         }
     }
-    public static void Export(Summary summary) => Export(summary, FindSourceFiles());
-    private static void Export(Summary summary, List<FileInfo> allFiles)
+
+    public static Task Export(this Assembly assembly, Summary summary) => Export(summary, FindSourceFiles(assembly));
+    private static Task Export(Summary summary, List<FileInfo> allFiles)
         => Export(summary, MarkdownExporter.Console, allFiles);
-    private static void Export(Summary summary, IExporter exporter, List<FileInfo> allFiles)
+
+    private static async Task Export(Summary summary, IExporter exporter, List<FileInfo> allFiles)
     {
-        foreach (var file in exporter.ExportToFiles(summary, logger)) {
-            var name = BenchmarkName(file);
+        Task update = Task.CompletedTask;
+        foreach (var file in exporter.ExportToFiles(summary, logger).Select(f => new FileInfo(f))) {
+            var name = BenchmarkName(file.Name);
             var fileName = $"{name}.cs";
-            Console.WriteLine($"Exporting: {name}");
+            logger.WriteLine($"Exporting: {name}");
             var sourceFile = allFiles.Single(f => f.Name.EndsWith(fileName));
-            UpdateSourceFile(sourceFile, File.ReadAllText(file));
-            File.Delete(file);
+            await update.ConfigureAwait(false);
+            update = UpdateSourceFile(sourceFile, file);
         }
-    }
-    private static void UpdateSourceFile(FileInfo source, String result)
-    {
-        var tmpFile = $"{source.FullName}.tmp";
-        try {
-            Update(source, tmpFile, result);
-        }
-        finally {
-            File.Move(tmpFile, source.FullName, overwrite: true);
-        }
+        await update.ConfigureAwait(false);
 
-        static void Update(FileInfo source, String dest, String result)
+        static async Task UpdateSourceFile(FileInfo sourceFile, FileInfo reportFile)
         {
-            String line;
-            using var reader = source.OpenText();
-            using var writer = File.CreateText(dest);
-            while ((line = reader.ReadLine()) != null) {
-                if (line.StartsWith(mark)) {
-                    // overwrite existing result
-                    Append(writer, result);
-                    return;
-                }
-                writer.WriteLine(line);
-            }
-            // No mark found, first time appending a result
-            writer.WriteLine();
-            Append(writer, result);
-
-            static void Append(TextWriter writer, String result)
-            {
-                writer.WriteLine(mark);
-                writer.Write(result);
-                writer.WriteLine("*/");
-            }
+            using var section = reportFile.OpenText();
+            await sourceFile.InsertSectionAsync(mark, section.ReadLines()).ConfigureAwait(false);
+            reportFile.Delete();
         }
     }
 
-    private static List<FileInfo> FindSourceFiles()
+    private static List<FileInfo> FindSourceFiles(Assembly assembly)
     {
-        var myAssembly = typeof(Exporter).Assembly;
-        var assemblyName = myAssembly.GetName().Name;
-        var dir = new DirectoryInfo(myAssembly.Location);
-        while (!dir.Name.EndsWith(assemblyName)) {
+        var assemblyName = assembly.GetName().Name ?? throw new ArgumentNullException(nameof(assembly));
+        DirectoryInfo? dir = new(assembly.Location);
+        while (dir.Name.EndsWith(assemblyName) == false) {
             var prev = dir.FullName;
-            dir = dir.Parent;
-            if (prev == dir.FullName) {
+            if ((dir = dir?.Parent) is null || prev == dir.FullName) {
                 throw new Exception($"Failed finding source dir @ {prev}");
             }
         }
         return dir.EnumerateFiles("*.cs", SearchOption.AllDirectories).ToList();
     }
+
     private static String BenchmarkName(ReadOnlySpan<Char> reportPath)
     {
         var index = reportPath.IndexOf('-');
