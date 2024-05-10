@@ -14,6 +14,7 @@ public class ExponentialDecayTest
 
         Assert.Throws<ArgumentOutOfRangeException>(() => ExponentialDecay.StartNew(interval));
     }
+
     [Theory]
     [InlineData(1)]
     [InlineData(1.0 - 3e-15)]
