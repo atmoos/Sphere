@@ -7,6 +7,32 @@ namespace Atmoos.Sphere.Test.Async;
 public class ExtensionsTest
 {
     [Fact]
+    public async Task InCompletionOrder_OnEmptyTasks_ReturnsEmpty()
+    {
+        List<Int32> actualIds = [];
+        List<Task<Int32>> unorderedTasks = [];
+        foreach (Task<Int32> orderedTask in unorderedTasks.OrderByCompletion()) {
+            actualIds.Add(await orderedTask);
+        }
+        Assert.Empty(actualIds);
+    }
+
+    [Fact]
+    public async Task InCompletionOrder_OnSingularTasks_ReturnsSameSingularTask()
+    {
+        const Int32 singularId = 3;
+        List<Int32> actualIds = [];
+        List<Task<Int32>> actualTasks = [];
+        List<Task<Int32>> expected = [IdentifiableDelay(singularId)];
+        foreach (Task<Int32> orderedTask in expected.OrderByCompletion()) {
+            actualIds.Add(await orderedTask);
+            actualTasks.Add(orderedTask);
+        }
+        Assert.Equal([singularId], actualIds);
+        Assert.Same(expected[0], actualTasks[0]);
+    }
+
+    [Fact]
     public async Task InCompletionOrder_OnTimeOrderedTasks_ReturnsTasksInCompletionOrder()
     {
         const Int32 count = 9;
@@ -95,6 +121,21 @@ public class ExtensionsTest
             expectedNews[indexOfCancelingTask] = cancels;
             Assert.Equal(expectedNews, actualNews);
         }
+    }
+
+    [Fact]
+    public async Task EnumerableTasksAsAsyncEnumerable_AreOrderedByCompletion()
+    {
+        const Int32 count = 9;
+        var random = new Random();
+        var unorderedTasks = Enumerable.Range(0, count).OrderBy(_ => random.Next()).Select(id => IdentifiableDelay(id, scaling: 24));
+        var actualIds = new List<Int32>(count);
+
+        await foreach (var orderedTask in unorderedTasks.AsAsync()) {
+            actualIds.Add(orderedTask);
+        }
+
+        Assert.Equal(Enumerable.Range(0, count), actualIds);
     }
 
     private static async Task<Int32> IdentifiableDelay(Int32 id, Int32 scaling = 16)

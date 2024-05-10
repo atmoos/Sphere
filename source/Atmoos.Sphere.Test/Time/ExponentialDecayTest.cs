@@ -5,6 +5,26 @@ namespace Atmoos.Sphere.Test.Time;
 
 public class ExponentialDecayTest
 {
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public void CannotCreateDecayWithIntervalSmallerOrEqualZero(Int32 msInterval)
+    {
+        var interval = TimeSpan.FromMilliseconds(msInterval);
+
+        Assert.Throws<ArgumentOutOfRangeException>(() => ExponentialDecay.StartNew(interval));
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(1.0 - 3e-15)]
+    public void CannotCreateDecayWithDecayFactorSmallerOrEqualOne(Double decayFactor)
+    {
+        var interval = TimeSpan.FromMilliseconds(4);
+
+        Assert.Throws<ArgumentOutOfRangeException>(() => ExponentialDecay.StartNew(interval, decayFactor));
+    }
+
     [Fact]
     public async Task ExponentialDecayDecaysExponentially()
     {

@@ -1,5 +1,7 @@
 using System.Runtime.CompilerServices;
 
+using static System.Threading.Tasks.ConfigureAwaitOptions;
+
 namespace Atmoos.Sphere.Text;
 
 public static class Extensions
@@ -34,7 +36,7 @@ public static class Extensions
     /// <param name="token">The cancellation token.</param>
     public static async Task InsertSectionAsync(this FileInfo file, LineMark tag, IEnumerable<String> section, CancellationToken token = default)
     {
-        String copy = await Impl(file, tag, section, token).ConfigureAwait(false);
+        String copy = await Impl(file, tag, section, token).ConfigureAwait(None);
         File.Move(copy, file.FullName, overwrite: true);
 
         static async Task<String> Impl(FileInfo file, LineMark tag, IEnumerable<String> lines, CancellationToken token)
@@ -42,7 +44,7 @@ public static class Extensions
             var copyName = $"{file.FullName}.tmp";
             using var source = file.OpenText();
             using var temporary = File.CreateText(copyName);
-            await source.InsertSectionAsync(temporary, in tag, lines, token).ConfigureAwait(false);
+            await source.InsertSectionAsync(temporary, in tag, lines, token).ConfigureAwait(None);
             return copyName;
         }
     }
@@ -79,11 +81,10 @@ public static class Extensions
     {
         Task write = Task.CompletedTask;
         await foreach (var line in lines.WithCancellation(token).ConfigureAwait(false)) {
-            Task next = writer.WriteLineAsync(line.AsMemory(), token);
-            await write.ConfigureAwait(false);
-            write = next;
+            await write.ConfigureAwait(None);
+            write = writer.WriteLineAsync(line.AsMemory(), token);
         }
-        await write.ConfigureAwait(false);
+        await write.ConfigureAwait(None);
     }
 
     /// <summary>

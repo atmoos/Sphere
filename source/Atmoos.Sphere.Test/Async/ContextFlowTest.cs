@@ -48,6 +48,30 @@ public class ContextFlowTest
         }
     }
 
+    [Fact]
+    public async Task SwitchingBackToOriginalContextSucceedsFromNoContext()
+    {
+        var expected = SetContext(new SomeContext());
+        var flow = ContextFlow.Current();
+        await Task.Yield();
+        SetContext(null!);
+        await AsynchronousStuff();
+        Assert.Null(SynchronizationContext.Current);
+        await flow;
+        Assert.Same(expected, SynchronizationContext.Current);
+    }
+
+    [Fact]
+    public async Task SwitchingBackToOriginalNullContextSucceedsFromNonNullContext()
+    {
+        SynchronizationContext.SetSynchronizationContext(null);
+        var flow = ContextFlow.Current();
+        SetContext(new SomeContext());
+        Assert.NotNull(SynchronizationContext.Current);
+        await flow;
+        Assert.Null(SynchronizationContext.Current);
+    }
+
     private static async Task AsynchronousStuff()
     {
         const Int32 initial = 3;
