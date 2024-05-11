@@ -20,9 +20,15 @@ public static class Extensions
         static String Impl(FileInfo file, in LineMark tag, IEnumerable<String> lines)
         {
             var copyName = $"{file.FullName}.tmp";
-            using var source = file.OpenText();
-            using var temporary = File.CreateText(copyName);
-            source.InsertSection(temporary, in tag, lines);
+            try {
+                using var source = file.OpenText();
+                using var temporary = File.CreateText(copyName);
+                source.InsertSection(temporary, in tag, lines);
+            }
+            catch {
+                File.Delete(copyName);
+                throw;
+            }
             return copyName;
         }
     }
@@ -42,9 +48,15 @@ public static class Extensions
         static async Task<String> Impl(FileInfo file, LineMark tag, IEnumerable<String> lines, CancellationToken token)
         {
             var copyName = $"{file.FullName}.tmp";
-            using var source = file.OpenText();
-            using var temporary = File.CreateText(copyName);
-            await source.InsertSectionAsync(temporary, in tag, lines, token).ConfigureAwait(None);
+            try {
+                using var source = file.OpenText();
+                using var temporary = File.CreateText(copyName);
+                await source.InsertSectionAsync(temporary, in tag, lines, token).ConfigureAwait(None);
+            }
+            catch {
+                File.Delete(copyName);
+                throw;
+            }
             return copyName;
         }
     }
