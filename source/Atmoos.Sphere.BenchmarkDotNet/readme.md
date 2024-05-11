@@ -6,7 +6,25 @@ One scenario is to run all benchmarks before a release or major PR. Improvements
 
 For examples of this use case please see: [Atmoos.Sphere.Benchmark](https://github.com/atmoos/Sphere/tree/main/source/Atmoos.Sphere.Benchmark), where this library is used.
 
-## Example Use
+## Prepping Benchmark Source Files
+
+To mark the location into which the results should be inserted in your benchmark source files, simply add a `/* Summary *` start and `/*` end tag.
+
+For example like so in `MyBenchmark.cs`:
+
+```csharp
+public class MyBenchmark
+{
+    // Your benchmarks go here...
+}
+
+/* Summary *
+/* End */
+```
+
+The benchmark report will be inserted in-between those two tags.
+
+## Example Program.cs File
 
 A simple Program.cs file might look something like this:
 
