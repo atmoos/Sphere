@@ -72,6 +72,16 @@ public class ContextFlowTest
         Assert.Null(SynchronizationContext.Current);
     }
 
+    [Fact]
+    public async Task ContextFlow_CanHandleCompletelyAbsentSynchronisationContext()
+    {
+        SynchronizationContext.SetSynchronizationContext(null);
+        var flow = ContextFlow.Current();
+        Assert.Null(SynchronizationContext.Current);
+        await flow;
+        Assert.Null(SynchronizationContext.Current);
+    }
+
     private static async Task AsynchronousStuff()
     {
         const Int32 initial = 3;
