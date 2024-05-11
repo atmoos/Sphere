@@ -13,13 +13,13 @@ public static class Exporter
 
     public static async Task Export(this Assembly assembly, IEnumerable<Summary> summaries)
     {
-        var sourceFiles = FindSourceFiles(assembly);
+        var sourceFiles = ExtractSources(assembly);
         foreach (var summary in summaries) {
             await Export(summary, sourceFiles).ConfigureAwait(false);
         }
     }
 
-    public static Task Export(this Assembly assembly, Summary summary) => Export(summary, FindSourceFiles(assembly));
+    public static Task Export(this Assembly assembly, Summary summary) => Export(summary, ExtractSources(assembly));
     private static Task Export(Summary summary, List<FileInfo> allFiles)
         => Export(summary, MarkdownExporter.Console, allFiles);
 
@@ -30,21 +30,29 @@ public static class Exporter
             var name = BenchmarkName(file.Name);
             var fileName = $"{name}.cs";
             logger.WriteLine($"Exporting: {name}");
+            // ToDo: This is not safe, but good enough for now.
             var sourceFile = allFiles.Single(f => f.Name.EndsWith(fileName));
             await update.ConfigureAwait(false);
             update = UpdateSourceFile(sourceFile, file);
         }
         await update.ConfigureAwait(false);
 
-        static async Task UpdateSourceFile(FileInfo sourceFile, FileInfo reportFile)
+        static async Task UpdateSourceFile(FileInfo source, FileInfo benchmarkReport)
         {
-            using var section = reportFile.OpenText();
-            await sourceFile.InsertSectionAsync(mark, section.ReadLines()).ConfigureAwait(false);
-            reportFile.Delete();
+            try {
+                using var report = benchmarkReport.OpenText();
+                await source.InsertSectionAsync(mark, report.ReadLines()).ConfigureAwait(false);
+            }
+            finally {
+                benchmarkReport.Delete();
+            }
         }
     }
 
-    private static List<FileInfo> FindSourceFiles(Assembly assembly)
+    private static List<FileInfo> ExtractSources(this Assembly assembly)
+        => FindSourceFilesIn(FindSourceDir(assembly)).Select(f => new FileInfo(f)).ToList();
+
+    private static DirectoryInfo FindSourceDir(Assembly assembly)
     {
         var assemblyName = assembly.GetName().Name ?? throw new ArgumentNullException(nameof(assembly));
         DirectoryInfo? dir = new(assembly.Location);
@@ -54,15 +62,19 @@ public static class Exporter
                 throw new Exception($"Failed finding source dir @ {prev}");
             }
         }
-        return dir.EnumerateFiles("*.cs", SearchOption.AllDirectories).ToList();
+        return dir;
     }
 
-    private static String BenchmarkName(ReadOnlySpan<Char> reportPath)
+    private static IEnumerable<String> FindSourceFilesIn(DirectoryInfo dir, String sourceType = "*.cs")
+        => dir.EnumerateFiles(sourceType, SearchOption.AllDirectories).Select(f => f.FullName);
+
+    private static String BenchmarkName(String reportPath)
     {
+        // path is:  Namespace.ClassName-report-console.md
         var index = reportPath.IndexOf('-');
         var sourceName = reportPath[..index];
         index = sourceName.LastIndexOf('.') + 1;
-        return new String(sourceName[index..]);
+        return sourceName[index..];
     }
 }
 
