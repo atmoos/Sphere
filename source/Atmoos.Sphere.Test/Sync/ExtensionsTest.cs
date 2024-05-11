@@ -62,7 +62,7 @@ public class ExtensionsTest
     public void AwaitVoidPropagatesCancellation()
     {
         var longDelay = 4 * delay;
-        var cancelAfter = 1.2 * delay;
+        var cancelAfter = 1.6 * delay;
         using var cts = new CancellationTokenSource(cancelAfter);
         Task task = SomeTask(longDelay, cts.Token);
         var timer = Stopwatch.StartNew();
@@ -78,7 +78,7 @@ public class ExtensionsTest
     public void AwaitResultPropagatesCancellation()
     {
         var longDelay = 4 * delay;
-        var cancelAfter = 1.2 * delay;
+        var cancelAfter = 1.6 * delay;
         using var cts = new CancellationTokenSource(cancelAfter);
         Task<TimeSpan> task = SomeTask(longDelay, cts.Token);
         var timer = Stopwatch.StartNew();
