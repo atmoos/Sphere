@@ -1,3 +1,4 @@
+using System.Collections;
 using Atmoos.Sphere.Text;
 
 using static Atmoos.Sphere.Text.LineMarks;
@@ -50,6 +51,29 @@ public class TextInsertTest
     }
 
     [Fact]
+    public void InsertSectionInFilesAreCleanedUpOnError()
+    {
+        var source = new FileInfo("Test.md");
+        var tempFileName = $"{source.FullName}.tmp";
+        try {
+
+            File.WriteAllText(source.FullName, Text(mark, toReplace));
+            IEnumerable<String> failingLines = FailingLines("This is a test.");
+
+            Assert.Throws<InvalidOperationException>(() => source.InsertSection(mark, failingLines));
+
+            Assert.False(File.Exists(tempFileName), "Temporary file was not cleaned up.");
+        }
+        finally {
+            if (File.Exists(tempFileName)) {
+                File.Delete(tempFileName);
+            }
+            source.Attributes = FileAttributes.Normal;
+            source.Delete();
+        }
+    }
+
+    [Fact]
     public async Task InsertSectionInFileAsyncReplacesTextAtSpecifiedLineMark()
     {
         var source = new FileInfo("AsyncTest.md");
@@ -64,6 +88,29 @@ public class TextInsertTest
             Assert.Equal(expected, actual);
         }
         finally {
+            source.Delete();
+        }
+    }
+
+    [Fact]
+    public async Task InsertSectionAsyncInFilesAreCleanedUpOnError()
+    {
+        var source = new FileInfo("Test.md");
+        var tempFileName = $"{source.FullName}.tmp";
+        try {
+
+            File.WriteAllText(source.FullName, Text(mark, toReplace));
+            IEnumerable<String> failingLines = FailingLines("This is a test.");
+
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await source.InsertSectionAsync(mark, failingLines));
+
+            Assert.False(File.Exists(tempFileName), "Temporary file was not cleaned up.");
+        }
+        finally {
+            if (File.Exists(tempFileName)) {
+                File.Delete(tempFileName);
+            }
+            source.Attributes = FileAttributes.Normal;
             source.Delete();
         }
     }
@@ -93,6 +140,12 @@ public class TextInsertTest
                 }
             }
         }
+    }
+
+    static IEnumerable<String> FailingLines(String message)
+    {
+        yield return "Just some singular line.";
+        throw new InvalidOperationException(message);
     }
 
     static String Text(in LineMark tag, String insert)
