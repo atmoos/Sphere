@@ -60,25 +60,25 @@ BenchmarkDotNet v0.13.12, Arch Linux
 Intel Core i7-8565U CPU 1.80GHz (Whiskey Lake), 1 CPU, 8 logical and 4 physical cores
 .NET SDK 8.0.104
   [Host]     : .NET 8.0.4 (8.0.424.16909), X64 RyuJIT AVX2
-  Job-WZFBTT : .NET 8.0.4 (8.0.424.16909), X64 RyuJIT AVX2
+  Job-UFLBFX : .NET 8.0.4 (8.0.424.16909), X64 RyuJIT AVX2
 
 InvocationCount=1  UnrollFactor=1  
 
 | Method                  | Count | Mean       | Error   | Ratio | Allocated  | Alloc Ratio |
 |------------------------ |------ |-----------:|--------:|------:|-----------:|------------:|
-| Unordered               | 128   |   257.0 ms | 1.77 ms |  1.00 |    1.33 KB |        0.04 |
-| OrderedByCompletion     | 128   |   257.9 ms | 1.32 ms |  1.00 |   31.51 KB |        1.00 |
-| NaiveCompletionOrdering | 128   |   258.2 ms | 0.71 ms |  1.00 |  116.94 KB |        3.71 |
+| Unordered               | 128   |   257.5 ms | 1.44 ms |  1.00 |    1.33 KB |        0.04 |
+| OrderedByCompletion     | 128   |   257.5 ms | 1.40 ms |  1.00 |   32.29 KB |        1.00 |
+| NaiveCompletionOrdering | 128   |   257.3 ms | 1.26 ms |  1.00 |  115.79 KB |        3.59 |
 |                         |       |            |         |       |            |             |
-| Unordered               | 256   |   514.0 ms | 1.33 ms |  1.00 |    1.33 KB |        0.02 |
-| OrderedByCompletion     | 256   |   514.4 ms | 0.91 ms |  1.00 |   61.76 KB |        1.00 |
-| NaiveCompletionOrdering | 256   |   514.3 ms | 0.77 ms |  1.00 |  343.47 KB |        5.56 |
+| Unordered               | 256   |   513.9 ms | 0.68 ms |  1.00 |    1.33 KB |        0.02 |
+| OrderedByCompletion     | 256   |   513.5 ms | 1.27 ms |  1.00 |   61.76 KB |        1.00 |
+| NaiveCompletionOrdering | 256   |   513.4 ms | 1.26 ms |  1.00 |  344.52 KB |        5.58 |
 |                         |       |            |         |       |            |             |
-| Unordered               | 512   | 1,023.7 ms | 0.80 ms |  1.00 |    1.33 KB |        0.01 |
-| OrderedByCompletion     | 512   | 1,023.8 ms | 0.87 ms |  1.00 |  121.38 KB |        1.00 |
-| NaiveCompletionOrdering | 512   | 1,023.7 ms | 1.06 ms |  1.00 | 1198.01 KB |        9.87 |
+| Unordered               | 512   | 1,022.2 ms | 1.76 ms |  1.00 |    1.33 KB |        0.01 |
+| OrderedByCompletion     | 512   | 1,023.0 ms | 1.04 ms |  1.00 |  121.63 KB |        1.00 |
+| NaiveCompletionOrdering | 512   | 1,023.6 ms | 1.07 ms |  1.00 | 1231.64 KB |       10.13 |
 |                         |       |            |         |       |            |             |
-| Unordered               | 1024  | 2,046.3 ms | 1.84 ms |  1.00 |    1.33 KB |       0.006 |
-| OrderedByCompletion     | 1024  | 2,046.4 ms | 1.39 ms |  1.00 |  241.38 KB |       1.000 |
-| NaiveCompletionOrdering | 1024  | 2,044.8 ms | 4.04 ms |  1.00 | 4461.77 KB |      18.484 |
+| Unordered               | 1024  | 2,046.7 ms | 1.81 ms |  1.00 |    1.33 KB |       0.005 |
+| OrderedByCompletion     | 1024  | 2,045.5 ms | 3.22 ms |  1.00 |  241.63 KB |       1.000 |
+| NaiveCompletionOrdering | 1024  | 2,047.0 ms | 1.88 ms |  1.00 | 4508.52 KB |      18.659 |
 /* End */

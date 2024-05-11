@@ -88,14 +88,14 @@ Intel Core i7-8565U CPU 1.80GHz (Whiskey Lake), 1 CPU, 8 logical and 4 physical 
 Job=ShortRun  InvocationCount=1  IterationCount=3  
 LaunchCount=1  UnrollFactor=1  WarmupCount=3  
 
-| Method               | MsDelay | Mean       | Error    | Ratio | Allocated | Alloc Ratio |
-|--------------------- |-------- |-----------:|---------:|------:|----------:|------------:|
-| InsertSynchronously  | 2       | 1,016.3 ms | 45.58 ms |  1.46 |   7.42 KB |        0.14 |
-| InsertAsynchronously | 2       |   697.1 ms | 97.05 ms |  1.00 |  51.64 KB |        1.00 |
-|                      |         |            |          |       |           |             |
-| InsertSynchronously  | 4       | 1,936.4 ms | 15.03 ms |  1.45 |   7.42 KB |        0.14 |
-| InsertAsynchronously | 4       | 1,332.3 ms | 25.72 ms |  1.00 |  51.64 KB |        1.00 |
-|                      |         |            |          |       |           |             |
-| InsertSynchronously  | 8       | 3,803.9 ms | 91.07 ms |  1.46 |   7.42 KB |        0.14 |
-| InsertAsynchronously | 8       | 2,607.3 ms | 70.47 ms |  1.00 |  51.64 KB |        1.00 |
+| Method               | MsDelay | Mean       | Error     | Ratio | Allocated | Alloc Ratio |
+|--------------------- |-------- |-----------:|----------:|------:|----------:|------------:|
+| InsertSynchronously  | 2       | 1,038.8 ms | 210.85 ms |  1.45 |   7.42 KB |        0.14 |
+| InsertAsynchronously | 2       |   715.3 ms | 113.33 ms |  1.00 |  51.64 KB |        1.00 |
+|                      |         |            |           |       |           |             |
+| InsertSynchronously  | 4       | 1,970.1 ms |  32.81 ms |  1.46 |   7.42 KB |        0.14 |
+| InsertAsynchronously | 4       | 1,349.0 ms |  97.26 ms |  1.00 |  51.64 KB |        1.00 |
+|                      |         |            |           |       |           |             |
+| InsertSynchronously  | 8       | 4,055.1 ms | 129.72 ms |  1.46 |   7.42 KB |        0.14 |
+| InsertAsynchronously | 8       | 2,772.1 ms | 349.39 ms |  1.00 |  51.64 KB |        1.00 |
 /* End */
