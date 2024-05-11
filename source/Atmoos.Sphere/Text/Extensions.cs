@@ -14,16 +14,22 @@ public static class Extensions
     /// <param name="section">The text that is to be inserted.</param>
     public static void InsertSection(this FileInfo file, in LineMark tag, IEnumerable<String> section)
     {
-        String copy = Impl(file, in tag, section);
-        File.Move(copy, file.FullName, overwrite: true);
+        String temporaryCopy = CreateTemporaryCopy(file, in tag, section);
+        File.Move(temporaryCopy, file.FullName, overwrite: true);
 
-        static String Impl(FileInfo file, in LineMark tag, IEnumerable<String> lines)
+        static String CreateTemporaryCopy(FileInfo file, in LineMark tag, IEnumerable<String> lines)
         {
-            var copyName = $"{file.FullName}.tmp";
-            using var source = file.OpenText();
-            using var temporary = File.CreateText(copyName);
-            source.InsertSection(temporary, in tag, lines);
-            return copyName;
+            var temporaryFile = $"{file.FullName}.tmp";
+            try {
+                using var source = file.OpenText();
+                using var temporary = File.CreateText(temporaryFile);
+                source.InsertSection(temporary, in tag, lines);
+            }
+            catch {
+                File.Delete(temporaryFile);
+                throw;
+            }
+            return temporaryFile;
         }
     }
 
@@ -36,16 +42,22 @@ public static class Extensions
     /// <param name="token">The cancellation token.</param>
     public static async Task InsertSectionAsync(this FileInfo file, LineMark tag, IEnumerable<String> section, CancellationToken token = default)
     {
-        String copy = await Impl(file, tag, section, token).ConfigureAwait(None);
-        File.Move(copy, file.FullName, overwrite: true);
+        String temporaryCopy = await CreateTemporaryCopy(file, tag, section, token).ConfigureAwait(None);
+        File.Move(temporaryCopy, file.FullName, overwrite: true);
 
-        static async Task<String> Impl(FileInfo file, LineMark tag, IEnumerable<String> lines, CancellationToken token)
+        static async Task<String> CreateTemporaryCopy(FileInfo file, LineMark tag, IEnumerable<String> lines, CancellationToken token)
         {
-            var copyName = $"{file.FullName}.tmp";
-            using var source = file.OpenText();
-            using var temporary = File.CreateText(copyName);
-            await source.InsertSectionAsync(temporary, in tag, lines, token).ConfigureAwait(None);
-            return copyName;
+            var temporaryFile = $"{file.FullName}.tmp";
+            try {
+                using var source = file.OpenText();
+                using var temporary = File.CreateText(temporaryFile);
+                await source.InsertSectionAsync(temporary, in tag, lines, token).ConfigureAwait(None);
+            }
+            catch {
+                File.Delete(temporaryFile);
+                throw;
+            }
+            return temporaryFile;
         }
     }
 
