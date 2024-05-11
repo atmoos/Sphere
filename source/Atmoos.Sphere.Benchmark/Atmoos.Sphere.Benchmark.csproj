@@ -19,12 +19,12 @@
   
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.13.12" />
-    <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows"
-                      Version="0.13.12"
-                      Condition="'$(OS)' == 'Windows_NT'" />
+    <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.13.12" Condition="'$(OS)' == 'Windows_NT'" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Atmoos.Sphere\Atmoos.Sphere.csproj" />
+    <ProjectReference Include="..\Atmoos.Sphere.BenchmarkDotNet\Atmoos.Sphere.BenchmarkDotNet.csproj" />
   </ItemGroup>
+  
 </Project>

@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atmoos.Sphere.Test", "Atmoo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atmoos.Sphere.Benchmark", "Atmoos.Sphere.Benchmark\Atmoos.Sphere.Benchmark.csproj", "{C32C194F-E125-421B-81DD-A287265450F7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atmoos.Sphere.BenchmarkDotNet", "Atmoos.Sphere.BenchmarkDotNet\Atmoos.Sphere.BenchmarkDotNet.csproj", "{1F179AC5-ECEC-4FA3-97D8-7453CB1F62E7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{C32C194F-E125-421B-81DD-A287265450F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C32C194F-E125-421B-81DD-A287265450F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C32C194F-E125-421B-81DD-A287265450F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F179AC5-ECEC-4FA3-97D8-7453CB1F62E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F179AC5-ECEC-4FA3-97D8-7453CB1F62E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F179AC5-ECEC-4FA3-97D8-7453CB1F62E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F179AC5-ECEC-4FA3-97D8-7453CB1F62E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
