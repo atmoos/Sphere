@@ -11,7 +11,7 @@ env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
   DOTNET_NOLOGO: true
   Prefix: 'sphere.benchmarkdotnet'
-  Project: 'source/Atmoos.Sphere/Atmoos.Sphere.BenchmarkDotNet.csproj'
+  Project: 'source/Atmoos.Sphere.BenchmarkDotNet/Atmoos.Sphere.BenchmarkDotNet.csproj'
   DotNetVersion: 8.0.x
   NugetKey: ${{ secrets.CREATENEWNUGETPACKAGE }}
 
