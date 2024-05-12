@@ -9,25 +9,25 @@ namespace Atmoos.Sphere.Benchmark.Text;
 [ShortRunJob, WarmupCount(5), IterationCount(11)]
 public class InsertFileBenchmark
 {
-    private const String testFile = "TestFile.cs";
-    private static readonly FileInfo file = new(testFile);
-    private static readonly LineMark md = LineMarks.Markdown.Code("csharp");
-    private static readonly String[] section = Section("Some Section", 241).ToArray();
+  private const String testFile = "TestFile.cs";
+  private static readonly FileInfo file = new(testFile);
+  private static readonly LineTag md = LineTags.Markdown.Code("csharp");
+  private static readonly String[] section = Section("Some Section", 241).ToArray();
 
-    [GlobalSetup]
-    public void Setup()
-    {
-        File.WriteAllText(testFile, String.Join(Environment.NewLine, Sections(1154, md, section, 1965)));
-    }
+  [GlobalSetup]
+  public void Setup()
+  {
+    File.WriteAllText(testFile, String.Join(Environment.NewLine, Sections(1154, md, section, 1965)));
+  }
 
-    [GlobalCleanup]
-    public void Cleanup() => File.Delete(testFile);
+  [GlobalCleanup]
+  public void Cleanup() => File.Delete(testFile);
 
-    [Benchmark]
-    public void InsertSynchronously() => file.InsertSection(md, section);
+  [Benchmark]
+  public void InsertSynchronously() => file.InsertSection(md, section);
 
-    [Benchmark(Baseline = true)]
-    public async Task InsertAsynchronously() => await file.InsertSectionAsync(md, section).ConfigureAwait(false);
+  [Benchmark(Baseline = true)]
+  public async Task InsertAsynchronously() => await file.InsertSectionAsync(md, section).ConfigureAwait(false);
 }
 
 /* Summary *

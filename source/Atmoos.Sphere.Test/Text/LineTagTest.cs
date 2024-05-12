@@ -1,23 +1,16 @@
 using Atmoos.Sphere.Text;
 
-using static Atmoos.Sphere.Text.LineMarks;
+using static Atmoos.Sphere.Text.LineTags;
 
 namespace Atmoos.Sphere.Test.Text;
 
-public class LineMarkTest
+public class LineTagTest
 {
-    [Fact]
-    public void ToStringConcatenatesTagAndName()
-    {
-        var mark = new LineMark { Tag = "Foo", Name = "Bar" };
-        Assert.Equal("FooBar", mark.ToString());
-    }
-
     [Fact]
     public void MarkdownHeaderIsCorrect()
     {
         var header = Markdown.Header("SomeName");
-        var expected = new LineMark { Tag = "#", Name = " SomeName" };
+        var expected = new LineTag { Start = "# SomeName", End = "#" };
         Assert.Equal(expected, header);
     }
 
@@ -25,7 +18,7 @@ public class LineMarkTest
     public void MarkdownSubHeaderIsCorrect()
     {
         var subHeader = Markdown.SubHeader("SomeName");
-        var expected = new LineMark { Tag = "##", Name = " SomeName" };
+        var expected = new LineTag { Start = "## SomeName", End = "##" };
         Assert.Equal(expected, subHeader);
     }
 
@@ -33,7 +26,7 @@ public class LineMarkTest
     public void MarkdownSubSubHeaderIsCorrect()
     {
         var subSubHeader = Markdown.SubSubHeader("SomeName");
-        var expected = new LineMark { Tag = "###", Name = " SomeName" };
+        var expected = new LineTag { Start = "### SomeName", End = "###" };
         Assert.Equal(expected, subSubHeader);
     }
 
@@ -41,7 +34,7 @@ public class LineMarkTest
     public void MarkdownCodeIsCorrect()
     {
         var code = Markdown.Code("SomeName");
-        var expected = new LineMark { Tag = "```", Name = "SomeName" };
+        var expected = new LineTag { Start = "``` SomeName", End = "```" };
         Assert.Equal(expected, code);
     }
 
@@ -49,7 +42,7 @@ public class LineMarkTest
     public void CSharpLineCommentIsCorrect()
     {
         var code = CSharp.LineComment("SomeName");
-        var expected = new LineMark { Tag = "//", Name = " SomeName" };
+        var expected = new LineTag { Start = "// SomeName", End = "// SomeName" };
         Assert.Equal(expected, code);
     }
 
@@ -57,7 +50,19 @@ public class LineMarkTest
     public void CSharpBlockCommentIsCorrect()
     {
         var code = CSharp.BlockComment("SomeName");
-        var expected = new LineMark { Tag = "/*", Name = " SomeName" };
+        var expected = new LineTag { Start = "/* SomeName", End = "SomeName */" };
         Assert.Equal(expected, code);
+    }
+
+    [Fact]
+    public void DeconstructingLineTagsDeconstructsIntoConstituents()
+    {
+        var expected = (start: "Start", end: "End");
+        var mark = new LineTag { Start = expected.start, End = expected.end };
+
+        var (actualStart, actualEnd) = mark;
+
+        Assert.Equal(expected.start, actualStart);
+        Assert.Equal(expected.end, actualEnd);
     }
 }
