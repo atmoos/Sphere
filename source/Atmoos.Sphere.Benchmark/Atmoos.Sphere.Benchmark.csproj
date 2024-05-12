@@ -23,7 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Atmoos.Sphere\Atmoos.Sphere.csproj" />
     <ProjectReference Include="..\Atmoos.Sphere.BenchmarkDotNet\Atmoos.Sphere.BenchmarkDotNet.csproj" />
   </ItemGroup>
   

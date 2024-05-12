@@ -1,13 +1,13 @@
 using System.Collections;
 using Atmoos.Sphere.Text;
 
-using static Atmoos.Sphere.Text.LineMarks;
+using static Atmoos.Sphere.Text.LineTags;
 
 namespace Atmoos.Sphere.Test.Text;
 
 public class TextInsertTest
 {
-    private static readonly LineMark mark = Markdown.Code("text");
+    private static readonly LineTag tag = Markdown.Code("text");
     private const String toReplace = """
                                        Hi there!
                                        This should be replaced.
@@ -22,11 +22,41 @@ public class TextInsertTest
     public void InsertSectionWithTextIoReplacesTextAtSpecifiedLineMark()
     {
         var destination = new StringWriter();
-        var source = new StringReader(Text(mark, toReplace));
+        var source = new StringReader(TextScenario(tag, toReplace));
 
-        source.InsertSection(destination, mark, toInsert.Split(Environment.NewLine));
+        source.InsertSection(destination, tag, toInsert.Split(Environment.NewLine));
 
-        var expected = Text(mark, toInsert);
+        var expected = TextScenario(tag, toInsert);
+        var actual = destination.ToString();
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void InsertSectionTextIoIsCompatibleWithMarkdownScenario()
+    {
+        var subheader = "My Subheader";
+        var destination = new StringWriter();
+        var headerTag = Markdown.SubHeader(subheader);
+        var source = new StringReader(MarkdownScenario(subheader, toReplace));
+
+        source.InsertSection(destination, headerTag, toInsert.Split(Environment.NewLine));
+
+        var expected = MarkdownScenario(subheader, toInsert);
+        var actual = destination.ToString();
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public async Task InsertSectionAsyncTextIoIsCompatibleWithMarkdownScenario()
+    {
+        var subheader = "My Subheader";
+        var destination = new StringWriter();
+        var headerTag = Markdown.SubHeader(subheader);
+        var source = new StringReader(MarkdownScenario(subheader, toReplace));
+
+        await source.InsertSectionAsync(destination, headerTag, toInsert.Split(Environment.NewLine));
+
+        var expected = MarkdownScenario(subheader, toInsert);
         var actual = destination.ToString();
         Assert.Equal(expected, actual);
     }
@@ -37,11 +67,11 @@ public class TextInsertTest
         var source = new FileInfo("Test.md");
         try {
 
-            File.WriteAllText(source.FullName, Text(mark, toReplace));
+            File.WriteAllText(source.FullName, TextScenario(tag, toReplace));
 
-            source.InsertSection(mark, toInsert.Split(Environment.NewLine));
+            source.InsertSection(tag, toInsert.Split(Environment.NewLine));
 
-            var expected = Text(mark, toInsert);
+            var expected = TextScenario(tag, toInsert);
             var actual = File.ReadAllText(source.FullName);
             Assert.Equal(expected, actual);
         }
@@ -57,10 +87,10 @@ public class TextInsertTest
         var tempFileName = $"{source.FullName}.tmp";
         try {
 
-            File.WriteAllText(source.FullName, Text(mark, toReplace));
+            File.WriteAllText(source.FullName, TextScenario(tag, toReplace));
             IEnumerable<String> failingLines = FailingLines("This is a test.");
 
-            Assert.Throws<InvalidOperationException>(() => source.InsertSection(mark, failingLines));
+            Assert.Throws<InvalidOperationException>(() => source.InsertSection(tag, failingLines));
 
             Assert.False(File.Exists(tempFileName), "Temporary file was not cleaned up.");
         }
@@ -79,11 +109,11 @@ public class TextInsertTest
         var source = new FileInfo("AsyncTest.md");
         try {
 
-            await File.WriteAllTextAsync(source.FullName, Text(mark, toReplace));
+            await File.WriteAllTextAsync(source.FullName, TextScenario(tag, toReplace));
 
-            await source.InsertSectionAsync(mark, toInsert.Split(Environment.NewLine));
+            await source.InsertSectionAsync(tag, toInsert.Split(Environment.NewLine));
 
-            var expected = Text(mark, toInsert);
+            var expected = TextScenario(tag, toInsert);
             var actual = await File.ReadAllTextAsync(source.FullName);
             Assert.Equal(expected, actual);
         }
@@ -99,10 +129,10 @@ public class TextInsertTest
         var tempFileName = $"{source.FullName}.tmp";
         try {
 
-            File.WriteAllText(source.FullName, Text(mark, toReplace));
+            File.WriteAllText(source.FullName, TextScenario(tag, toReplace));
             IEnumerable<String> failingLines = FailingLines("This is a test.");
 
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await source.InsertSectionAsync(mark, failingLines));
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await source.InsertSectionAsync(tag, failingLines));
 
             Assert.False(File.Exists(tempFileName), "Temporary file was not cleaned up.");
         }
@@ -120,12 +150,12 @@ public class TextInsertTest
     {
         const Int32 cancelAtLine = 12;
         const String lineToInsert = "This will be inserted.";
-        var source = new StringReader(Text(mark, "This will be replaced."));
+        var source = new StringReader(TextScenario(tag, "This will be replaced."));
         using var cts = new CancellationTokenSource();
         var destination = new StringWriter();
         var lotsOfLines = TriggerCancellation(InfiniteLinesOf(lineToInsert), cancelAtLine, cts);
 
-        await Assert.ThrowsAsync<TaskCanceledException>(async () => await source.InsertSectionAsync(destination, mark, lotsOfLines, cts.Token));
+        await Assert.ThrowsAsync<TaskCanceledException>(async () => await source.InsertSectionAsync(destination, tag, lotsOfLines, cts.Token));
 
         var actual = destination.ToString();
 
@@ -148,17 +178,32 @@ public class TextInsertTest
         throw new InvalidOperationException(message);
     }
 
-    static String Text(in LineMark tag, String insert)
+    static String TextScenario(in LineTag tag, String insert)
     {
         return $"""
                 # Sample
                 Hello World!
                 ## Sub Sample
                 This be intro.
-                {tag}
+                {tag.Start}
                 {insert}
-                {tag.Tag}
+                {tag.End}
                 and this be outro.
+
+                """;
+    }
+
+    static String MarkdownScenario(String subsectionTitle, String subsection)
+    {
+        return $"""
+                # Header
+                
+                Hello Markdown!
+                ## {subsectionTitle}
+                {subsection}
+                ## Some Sub-Header Title
+
+                and this be some other section.
 
                 """;
     }
