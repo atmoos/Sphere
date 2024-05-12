@@ -45,7 +45,7 @@ public static class Exporter
         }
         await update.ConfigureAwait(false);
 
-        static async Task UpdateSourceFile(FileInfo source, LineMark tag, FileInfo benchmarkReport)
+        static async Task UpdateSourceFile(FileInfo source, LineTag tag, FileInfo benchmarkReport)
         {
             try {
                 using var report = benchmarkReport.OpenText();

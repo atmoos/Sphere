@@ -5,8 +5,8 @@ namespace Atmoos.Sphere.BenchmarkDotNet;
 
 public sealed record class ExportConfig
 {
-    internal static LineMark defaultTag = new() { Tag = "/*", Name = " Summary *" };
+    internal static LineTag defaultTag = LineTags.CSharp.BlockComment("Summary");
     public static ExportConfig Default => new();
-    public LineMark Tag { get; init; } = defaultTag;
+    public LineTag Tag { get; init; } = defaultTag;
     public ILogger Logger { get; init; } = ConsoleLogger.Default;
 }

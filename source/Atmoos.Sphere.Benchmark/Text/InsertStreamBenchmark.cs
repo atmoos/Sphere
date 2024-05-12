@@ -11,7 +11,7 @@ namespace Atmoos.Sphere.Benchmark.Text;
 [ShortRunJob]
 public class InsertStreamBenchmark
 {
-    private static readonly LineMark md = LineMarks.Markdown.Code("csharp");
+    private static readonly LineTag md = LineTags.Markdown.Code("csharp");
     private static readonly String longText = String.Join(Environment.NewLine, Sections(43, md, Section("Old Section", 9), 97));
     private static readonly String[] section = Section("New Section", 13).ToArray();
 
@@ -76,7 +76,7 @@ file sealed class SlowWriter(StringBuilder sb, TimeSpan delay) : StringWriter(sb
     }
 }
 
-/* Summary *
+/* Summary
 
 BenchmarkDotNet v0.13.12, Arch Linux
 Intel Core i7-8565U CPU 1.80GHz (Whiskey Lake), 1 CPU, 8 logical and 4 physical cores
@@ -100,4 +100,4 @@ LaunchCount=1  UnrollFactor=1  WarmupCount=3
 |                      |         |            |           |       |           |             |
 | InsertSynchronously  | 8       | 3,795.9 ms |  89.24 ms |  1.46 |   7.42 KB |        0.14 |
 | InsertAsynchronously | 8       | 2,602.9 ms |  63.58 ms |  1.00 |  51.64 KB |        1.00 |
-/* End */
+Summary */
