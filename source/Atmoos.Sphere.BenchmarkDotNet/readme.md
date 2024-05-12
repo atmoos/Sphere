@@ -6,9 +6,9 @@ One scenario is to run all benchmarks before a release or major PR. Improvements
 
 For examples of this use case please see: [Atmoos.Sphere.Benchmark](https://github.com/atmoos/Sphere/tree/main/source/Atmoos.Sphere.Benchmark), where this library is used.
 
-## Prepping Benchmark Source Files
+## Preparing Benchmark Source Files
 
-To mark the location into which the results should be inserted in your benchmark source files, simply add a `/* Summary *` start and `/*` end tag.
+To mark the location into which the results should be inserted in your benchmark source files, simply add a `/* Summary` start and `Summary */` end tag.
 
 For example like so in `MyBenchmark.cs`:
 
@@ -18,8 +18,8 @@ public class MyBenchmark
     // Your benchmarks go here...
 }
 
-/* Summary *
-/* End */
+/* Summary
+Summary */
 ```
 
 The benchmark report will be inserted in-between those two tags.
@@ -37,3 +37,7 @@ var assembly = typeof(Program).Assembly;
 var summary = BenchmarkSwitcher.FromAssembly(assembly).Run(args);
 await assembly.Export(summary); // this exports your results
 ```
+
+### Configuration
+
+The `Export` extension method has an overload which takes an [`ExportConfig`](https://github.com/atmoos/Sphere/blob/main/source/Atmoos.Sphere.BenchmarkDotNet/ExportConfig.cs) instance with which the export can be configured. This includes custom start and end tags.

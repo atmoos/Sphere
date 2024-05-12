@@ -11,7 +11,7 @@ public class InsertFileBenchmark
 {
     private const String testFile = "TestFile.cs";
     private static readonly FileInfo file = new(testFile);
-    private static readonly LineMark md = LineMarks.Markdown.Code("csharp");
+    private static readonly LineTag md = LineTags.Markdown.Code("csharp");
     private static readonly String[] section = Section("Some Section", 241).ToArray();
 
     [GlobalSetup]
@@ -38,7 +38,7 @@ public class InsertFileBenchmark
     }
 }
 
-/* Summary *
+/* Summary
 
 BenchmarkDotNet v0.13.12, Arch Linux
 Intel Core i7-8565U CPU 1.80GHz (Whiskey Lake), 1 CPU, 8 logical and 4 physical cores
@@ -51,6 +51,6 @@ WarmupCount=5
 
 | Method               | Mean       | Error     | Ratio | Gen0   | Allocated | Alloc Ratio |
 |--------------------- |-----------:|----------:|------:|-------:|----------:|------------:|
-| InsertSynchronously  |   241.8 μs |  13.24 μs |  0.21 | 1.4648 |  126.3 KB |        0.34 |
-| InsertAsynchronously | 1,192.7 μs | 315.00 μs |  1.00 | 3.9063 | 367.42 KB |        1.00 |
-/* End */
+| InsertSynchronously  |   286.2 μs |  11.55 μs |  0.21 | 1.4648 | 126.27 KB |        0.34 |
+| InsertAsynchronously | 1,362.1 μs | 277.08 μs |  1.00 | 3.9063 | 367.65 KB |        1.00 |
+Summary */

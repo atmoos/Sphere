@@ -54,7 +54,7 @@ public class OrderByCompletionBenchmark
     }
 }
 
-/* Summary *
+/* Summary
 
 BenchmarkDotNet v0.13.12, Arch Linux
 Intel Core i7-8565U CPU 1.80GHz (Whiskey Lake), 1 CPU, 8 logical and 4 physical cores
@@ -81,4 +81,4 @@ InvocationCount=1  UnrollFactor=1
 | Unordered               | 1024  | 2,046.7 ms | 1.81 ms |  1.00 |    1.33 KB |       0.005 |
 | OrderedByCompletion     | 1024  | 2,045.5 ms | 3.22 ms |  1.00 |  241.63 KB |       1.000 |
 | NaiveCompletionOrdering | 1024  | 2,047.0 ms | 1.88 ms |  1.00 | 4508.52 KB |      18.659 |
-/* End */
+Summary */
