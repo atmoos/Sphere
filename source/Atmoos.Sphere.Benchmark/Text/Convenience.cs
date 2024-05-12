@@ -11,7 +11,7 @@ internal static class Convenience
         }
     }
 
-    public static IEnumerable<String> Sections(Int32 pre, LineTag mark, IEnumerable<String> section, Int32 post)
+    public static IEnumerable<String> Sections(Int32 pre, LineMark mark, IEnumerable<String> section, Int32 post)
     {
         foreach (var line in Section("Pre", pre)) {
             yield return line;
@@ -20,7 +20,7 @@ internal static class Convenience
         foreach (var line in section) {
             yield return line;
         }
-        yield return mark.Start;
+        yield return mark.Tag;
         foreach (var line in Section("Post", post)) {
             yield return line;
         }

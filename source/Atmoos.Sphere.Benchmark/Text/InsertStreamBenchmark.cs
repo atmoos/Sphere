@@ -10,7 +10,7 @@ namespace Atmoos.Sphere.Benchmark.Text;
 [ShortRunJob]
 public class InsertStreamBenchmark
 {
-    private static readonly LineTag md = LineTags.Markdown.Code("csharp");
+    private static readonly LineMark md = LineMarks.Markdown.Code("csharp");
     private static readonly String longText = String.Join(Environment.NewLine, Sections(43, md, Section("Old Section", 9), 97));
     private static readonly String[] section = Section("New Section", 13).ToArray();
 
