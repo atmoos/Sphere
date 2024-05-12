@@ -12,6 +12,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReleaseNotes>Please see: https://github.com/atmoos/Sphere/releases</PackageReleaseNotes>
     <PackageReadmeFile>readme.md</PackageReadmeFile>
+    <PackageId>$(RootNamespace)</PackageId>
   </PropertyGroup>
 
   <ItemGroup>

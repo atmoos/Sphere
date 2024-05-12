@@ -27,7 +27,6 @@ public static class LineTags
             var lineTag = $"// {name}";
             return new() { Start = lineTag, End = lineTag };
         }
-
         public static LineTag BlockComment(String name) => new() { Start = $"/* {name}", End = $"{name} */" };
         public static LineTag Region(String name) => new() { Start = $"#region {name}", End = "#endregion" };
     }
