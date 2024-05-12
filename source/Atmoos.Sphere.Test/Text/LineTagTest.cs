@@ -33,8 +33,8 @@ public class LineTagTest
     [Fact]
     public void MarkdownCodeIsCorrect()
     {
-        var code = Markdown.Code("SomeName");
-        var expected = new LineTag { Start = "``` SomeName", End = "```" };
+        var code = Markdown.Code("zsh SomeScript");
+        var expected = new LineTag { Start = "```zsh SomeScript", End = "```" };
         Assert.Equal(expected, code);
     }
 

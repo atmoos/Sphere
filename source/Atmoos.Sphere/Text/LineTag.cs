@@ -17,7 +17,7 @@ public static class LineTags
         public static LineTag Header(String name) => FromName("#", name);
         public static LineTag SubHeader(String name) => FromName("##", name);
         public static LineTag SubSubHeader(String name) => FromName("###", name);
-        public static LineTag Code(String name) => FromName("```", name);
+        public static LineTag Code(String name) => new() { Start = $"```{name}", End = "```" };
     }
 
     public static class CSharp
