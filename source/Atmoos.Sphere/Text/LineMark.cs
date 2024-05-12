@@ -16,4 +16,10 @@ public static class LineMarks
         public static LineMark SubSubHeader(String name) => new() { Tag = "###", Name = $" {name}" };
         public static LineMark Code(String name) => new() { Tag = "```", Name = name };
     }
+
+    public static class CSharp
+    {
+        public static LineMark LineComment(String name) => new() { Tag = "//", Name = $" {name}" };
+        public static LineMark BlockComment(String name) => new() { Tag = "/*", Name = $" {name}" };
+    }
 }

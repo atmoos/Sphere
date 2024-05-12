@@ -44,4 +44,20 @@ public class LineMarkTest
         var expected = new LineMark { Tag = "```", Name = "SomeName" };
         Assert.Equal(expected, code);
     }
+
+    [Fact]
+    public void CSharpLineCommentIsCorrect()
+    {
+        var code = CSharp.LineComment("SomeName");
+        var expected = new LineMark { Tag = "//", Name = " SomeName" };
+        Assert.Equal(expected, code);
+    }
+
+    [Fact]
+    public void CSharpBlockCommentIsCorrect()
+    {
+        var code = CSharp.BlockComment("SomeName");
+        var expected = new LineMark { Tag = "/*", Name = " SomeName" };
+        Assert.Equal(expected, code);
+    }
 }

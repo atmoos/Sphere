@@ -24,18 +24,10 @@ public class InsertFileBenchmark
     public void Cleanup() => File.Delete(testFile);
 
     [Benchmark]
-    public Int32 InsertSynchronously()
-    {
-        file.InsertSection(md, section);
-        return 0;
-    }
+    public void InsertSynchronously() => file.InsertSection(md, section);
 
     [Benchmark(Baseline = true)]
-    public async Task<Int32> InsertAsynchronously()
-    {
-        await file.InsertSectionAsync(md, section).ConfigureAwait(false);
-        return 0;
-    }
+    public async Task InsertAsynchronously() => await file.InsertSectionAsync(md, section).ConfigureAwait(false);
 }
 
 /* Summary *
@@ -49,8 +41,8 @@ Intel Core i7-8565U CPU 1.80GHz (Whiskey Lake), 1 CPU, 8 logical and 4 physical 
 Job=ShortRun  IterationCount=11  LaunchCount=1  
 WarmupCount=5  
 
-| Method               | Mean       | Error     | Ratio | Gen0   | Allocated | Alloc Ratio |
-|--------------------- |-----------:|----------:|------:|-------:|----------:|------------:|
-| InsertSynchronously  |   241.8 μs |  13.24 μs |  0.21 | 1.4648 |  126.3 KB |        0.34 |
-| InsertAsynchronously | 1,192.7 μs | 315.00 μs |  1.00 | 3.9063 | 367.42 KB |        1.00 |
+ Method               | Mean       | Error     | Ratio | Gen0   | Allocated | Alloc Ratio |
+--------------------- |-----------:|----------:|------:|-------:|----------:|------------:|
+ InsertSynchronously  |   239.9 μs |   4.31 μs |  0.19 | 1.4648 |  126.3 KB |        0.34 |
+ InsertAsynchronously | 1,296.4 μs | 339.26 μs |  1.00 | 3.9063 | 367.42 KB |        1.00 |
 /* End */
