@@ -38,13 +38,17 @@ public static class Exporter
         => Export(summary, MarkdownExporter.Console, allFiles, config);
     private static async Task Export(Summary summary, IExporter exporter, List<FileInfo> allFiles, ExportConfig config)
     {
+        FileInfo? sourceFile = null;
+        ILogger logger = config.Logger;
         Task update = Task.CompletedTask;
-        foreach (var file in exporter.ExportToFiles(summary, config.Logger).Select(f => new FileInfo(f))) {
+        foreach (var file in exporter.ExportToFiles(summary, logger).Select(f => new FileInfo(f))) {
             var (name, fileName) = BenchmarkName(file.Name);
-            config.Logger.WriteInfo($" -> {name}{NewLine}");
-            // ToDo: This is not safe, but good enough for now.
-            var sourceFile = allFiles.Single(f => f.Name.EndsWith(fileName));
+            if ((sourceFile = allFiles.SingleOrDefault(f => f.Name.EndsWith(fileName))) is null) {
+                logger.WriteError($" -> Missing: {fileName}{NewLine}");
+                continue;
+            }
             await update.ConfigureAwait(false);
+            logger.WriteInfo($" -> {name}{NewLine}");
             update = UpdateSourceFile(sourceFile, config.Tag, file);
         }
         await update.ConfigureAwait(false);
