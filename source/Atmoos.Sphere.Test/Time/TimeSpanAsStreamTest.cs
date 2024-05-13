@@ -10,13 +10,13 @@ public class TimeSpanAsStreamTest
     public void PassingANegativeInterval_ToTheConstructor_ThrowsAnArgumentOutOfRangeException()
     {
         TimeSpan interval = TimeSpan.FromMilliseconds(-5);
-        Assert.Throws<ArgumentOutOfRangeException>(() => interval.AsStream());
+        Assert.Throws<ArgumentOutOfRangeException>(() => interval.AsyncTimeSeries());
     }
 
     [Fact]
     public void PassingAnIntervalOfZero_ToTheConstructor_ThrowsAnArgumentOutOfRangeException()
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() => TimeSpan.Zero.AsStream());
+        Assert.Throws<ArgumentOutOfRangeException>(() => TimeSpan.Zero.AsyncTimeSeries());
     }
 
     [Fact]
@@ -26,7 +26,7 @@ public class TimeSpanAsStreamTest
         using var source = new CancellationTokenSource(200);
         await Assert.ThrowsAsync<TaskCanceledException>(async () =>
         {
-            await foreach (TimeSpan timeStamp in TimeSpan.FromMilliseconds(10).AsStream(source.Token)) {
+            await foreach (TimeSpan timeStamp in TimeSpan.FromMilliseconds(10).AsyncTimeSeries(source.Token)) {
                 if (count++ > 3) {
                     source.Cancel();
                 }
@@ -156,7 +156,7 @@ public class TimeSpanAsStreamTest
 
     private static Task RunRawTrack(TimerTrack track, Int32 steps, TimeSpan interval, CancellationToken token = default)
     {
-        return track.Run(interval.AsStream(token), steps, token);
+        return track.Run(interval.AsyncTimeSeries(token), steps, token);
     }
 
     private static void AreApproximatelyEqual(IEnumerable<Int32> expectedMs, IEnumerable<TimeSpan> actual, TimeSpan tol)
