@@ -15,6 +15,8 @@ public static class Exporter
         => await assembly.Export(summaries, defaultConfig).ConfigureAwait(false);
     public static async Task Export(this Assembly assembly, IEnumerable<Summary> summaries, ExportConfig config)
     {
+        config.Logger.WriteExportPreamble(summaries.Count());
+
         var export = Task.CompletedTask;
         var sourceFiles = ExtractSources(assembly);
         foreach (var summary in summaries) {
@@ -27,20 +29,26 @@ public static class Exporter
     public static async Task Export(this Assembly assembly, Summary summary)
         => await assembly.Export(summary, defaultConfig).ConfigureAwait(false);
     public static async Task Export(this Assembly assembly, Summary summary, ExportConfig config)
-        => await Export(summary, ExtractSources(assembly), config).ConfigureAwait(false);
+    {
+        config.Logger.WriteExportPreamble();
+        await Export(summary, ExtractSources(assembly), config).ConfigureAwait(false);
+    }
 
     private static Task Export(Summary summary, List<FileInfo> allFiles, ExportConfig config)
         => Export(summary, MarkdownExporter.Console, allFiles, config);
     private static async Task Export(Summary summary, IExporter exporter, List<FileInfo> allFiles, ExportConfig config)
     {
+        FileInfo? sourceFile = null;
+        ILogger logger = config.Logger;
         Task update = Task.CompletedTask;
-        foreach (var file in exporter.ExportToFiles(summary, config.Logger).Select(f => new FileInfo(f))) {
-            var name = BenchmarkName(file.Name);
-            var fileName = $"{name}.cs";
-            config.Logger.WriteInfo($"Exporting: {name}{NewLine}");
-            // ToDo: This is not safe, but good enough for now.
-            var sourceFile = allFiles.Single(f => f.Name.EndsWith(fileName));
+        foreach (var file in exporter.ExportToFiles(summary, logger).Select(f => new FileInfo(f))) {
+            var (name, fileName) = BenchmarkName(file.Name);
+            if ((sourceFile = allFiles.SingleOrDefault(f => f.Name.EndsWith(fileName))) is null) {
+                logger.WriteError($" -> Missing: {fileName}{NewLine}");
+                continue;
+            }
             await update.ConfigureAwait(false);
+            logger.WriteInfo($" -> {name}{NewLine}");
             update = UpdateSourceFile(sourceFile, config.Tag, file);
         }
         await update.ConfigureAwait(false);
@@ -76,11 +84,18 @@ public static class Exporter
     private static IEnumerable<String> FindSourceFilesIn(DirectoryInfo dir, String sourceType = "*.cs")
         => dir.EnumerateFiles(sourceType, SearchOption.AllDirectories).Select(f => f.FullName);
 
-    private static String BenchmarkName(String reportPath)
+    private static (String name, String fileName) BenchmarkName(String reportPath)
     {
         // path is:  Namespace.ClassName-report-console.md
         var end = reportPath.IndexOf('-');
         var start = reportPath.LastIndexOf('.', end, end) + 1;
-        return reportPath[start..end];
+        var name = reportPath[start..end];
+        return (name, $"{name}.cs");
+    }
+
+    private static void WriteExportPreamble(this ILogger logger, Int32 count = 1)
+    {
+        logger.WriteLine();
+        logger.WriteLineHeader($"// * Export to {(count <= 1 ? "source" : $"{count} sources")} *");
     }
 }
