@@ -106,6 +106,23 @@ public class AsyncEnumerableTest
     }
 
     [Fact]
+    public async Task WhenReturnFromMoveNextIsNotRespectedInvalidOperationExceptionIsThrown()
+    {
+        var twoElements = new List<Int32> { 1, 2 };
+        var e = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+        {
+            var asyncEnumerable = AsyncEnumerable.FromEnvelope<Int32>(async (u, ct) => await Envelope(twoElements, u, ct));
+            await using var iterator = asyncEnumerable.GetAsyncEnumerator();
+            while (true) {
+                await iterator.MoveNextAsync();
+                GC.KeepAlive(iterator.Current);
+            }
+
+        });
+        Assert.Contains("There are no more elements.", e.Message);
+    }
+
+    [Fact]
     public async Task EnumerationPropagatesErrorsFromTailEndOfLongRunningEnvelope()
     {
         var e = await Assert.ThrowsAsync<InvalidOperationException>(() => ConsumeEnvelope(FailsAtTheEnd));

@@ -1,6 +1,8 @@
 using System.Collections.Concurrent;
 using System.Runtime.ExceptionServices;
 
+using static System.Threading.Tasks.ConfigureAwaitOptions;
+
 namespace Atmoos.Sphere.Async;
 
 /// <summary>
@@ -85,12 +87,12 @@ public static class AsyncEnumerable
 
             public async ValueTask DisposeAsync()
             {
-                this.next?.TrySetResult(0);
+                this.next.TrySetResult(0);
                 if (this.token.IsCancellationRequested && this.cancellationTimeout > TimeSpan.Zero) {
-                    await (await Task.WhenAny(this.envelope, Task.Delay(this.cancellationTimeout))).ConfigureAwait(false);
+                    await (await Task.WhenAny(this.envelope, Task.Delay(this.cancellationTimeout)).ConfigureAwait(None)).ConfigureAwait(None);
                     return;
                 }
-                await this.envelope.ConfigureAwait(false);
+                await this.envelope.ConfigureAwait(None);
             }
 
             public async ValueTask<Boolean> MoveNextAsync()
@@ -106,7 +108,7 @@ public static class AsyncEnumerable
                 }
                 var current = this.next;
                 using (this.token.Register(() => current.TrySetCanceled())) {
-                    await current.Task.ConfigureAwait(false);
+                    await current.Task.ConfigureAwait(None);
                 }
                 Interlocked.Exchange(ref this.next, new TaskCompletionSource<Int32>());
                 return !this.queue.IsEmpty;
@@ -115,17 +117,17 @@ public static class AsyncEnumerable
             private async Task MonitorEnvelope(CancellableEnvelope<T> envelope, CancellationToken cancellation)
             {
                 try {
-                    await envelope(Listen, cancellation).ConfigureAwait(false);
+                    await envelope(Listen, cancellation).ConfigureAwait(None);
                 }
                 catch (Exception e) {
-                    this.next?.TrySetResult(0);
+                    this.next.TrySetResult(0);
                     ExceptionDispatchInfo.Capture(e).Throw();
                 }
 
                 void Listen(T item)
                 {
                     this.queue.Enqueue(item);
-                    this.next?.TrySetResult(0);
+                    this.next.TrySetResult(0);
                 }
             }
         }

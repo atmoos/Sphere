@@ -5,6 +5,22 @@ namespace Atmoos.Sphere.Test.Collections;
 public class ExtensionsTest
 {
     [Fact]
+    public void TheDifferencesOnAnEmptyCollectionIsItselfEmpty()
+    {
+        var actual = Array.Empty<Double>().Differences().ToArray();
+
+        Assert.Empty(actual);
+    }
+
+    [Fact]
+    public void TheDifferencesOnCollectionWithOnlyOneElementIsEmpty()
+    {
+        var actual = new Double[] { Math.Tau }.Differences().ToArray();
+
+        Assert.Empty(actual);
+    }
+
+    [Fact]
     public void TheDifferencesOnLinearFunctionAreConstant()
     {
         Int32 constant = 5;
