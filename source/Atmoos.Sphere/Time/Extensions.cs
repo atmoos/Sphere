@@ -17,15 +17,17 @@ public static class Extensions
     public static IEnumerable<(TimeSpan next, TimeSpan wallClock)> TimeSeries(this TimeSpan interval) => TimeSeries(interval, TimeStamps());
     internal static IEnumerable<(TimeSpan next, TimeSpan wallClock)> TimeSeries(this TimeSpan interval, IEnumerable<TimeSpan> wallClock)
     {
-        return Series(interval > TimeSpan.Zero ? interval : throw new ArgumentOutOfRangeException(nameof(interval), interval, "Interval strictly greater zero required"), wallClock.GetEnumerator());
+        return Series(interval > TimeSpan.Zero ? interval : throw new ArgumentOutOfRangeException(nameof(interval), interval, "Interval strictly greater zero required"), wallClock);
 
-        static IEnumerable<(TimeSpan next, TimeSpan wallTime)> Series(TimeSpan interval, IEnumerator<TimeSpan> wallClock)
+        static IEnumerable<(TimeSpan next, TimeSpan wallTime)> Series(TimeSpan interval, IEnumerable<TimeSpan> wallClock)
         {
             TimeSpan next = TimeSpan.Zero;
-            while (wallClock.MoveNext()) {
-                yield return (next, wallClock.Current);
-                wallClock.MoveNext();
-                next += interval * (((Int32)((wallClock.Current - next) / interval)) + 1);
+            using var reference = wallClock.GetEnumerator();
+            while (reference.MoveNext()) {
+                yield return (next, reference.Current);
+                reference.MoveNext();
+                var catchUp = Math.Ceiling((reference.Current - next) / interval); // Catchup to wall clock...
+                next += interval * Math.Max(catchUp, 1); // ...but always increment by at least one interval
             }
         }
     }
