@@ -17,7 +17,7 @@ internal static class Insert
             if (deleting) {
                 continue;
             }
-            if (!deleting && line == tag.Start) {
+            if (line == tag.Start) {
                 deleting = true;
             }
             yield return line;
@@ -37,7 +37,7 @@ internal static class Insert
             if (deleting) {
                 continue;
             }
-            if (!deleting && line == tag.Start) {
+            if (line == tag.Start) {
                 deleting = true;
             }
             yield return line;

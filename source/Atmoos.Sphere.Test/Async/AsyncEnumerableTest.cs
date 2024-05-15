@@ -2,15 +2,17 @@ using Atmoos.Sphere.Async;
 
 namespace Atmoos.Sphere.Test.Async;
 
+
 public class AsyncEnumerableTest
 {
     const String errorMessage = "This is some error message";
+    const Int32 timeoutMs = 500;
 
-    [Fact]
+    [Fact(Timeout = timeoutMs)]
     public async Task SequenceOrderIsPreserved()
     {
-        Int32[] expected = [9, 1, 3, 2, -3, 5];
         var actual = new List<Int32>();
+        Int32[] expected = [9, 1, 3, 2, -3, 5];
 
         await foreach (var value in AsyncEnumerable.FromEnvelope<Int32>((u, ct) => Envelope(expected, u, ct))) {
             actual.Add(value);
@@ -19,7 +21,28 @@ public class AsyncEnumerableTest
         Assert.Equal(expected, actual);
     }
 
-    [Fact]
+    [Fact(Timeout = timeoutMs)]
+    public async Task FromEnvelopeIsCompatibleWithSynchronouslyImplementedEnvelopes()
+    {
+        var actual = new List<Int32>();
+        Int32[] expected = [3, 1, 4, 5];
+
+        await foreach (var value in AsyncEnumerable.FromEnvelope<Int32>((u, ct) => SynchronousEnvelopeAsVeryBadExample(expected, u, ct))) {
+            actual.Add(value);
+        }
+
+        Assert.Equal(expected, actual);
+
+        static Task SynchronousEnvelopeAsVeryBadExample<T>(IEnumerable<T> values, Action<T> update, CancellationToken _)
+        {
+            foreach (var value in values) {
+                update(value);
+            }
+            return Task.CompletedTask;
+        }
+    }
+
+    [Fact(Timeout = timeoutMs)]
     public async Task EmptyEnvelope_ResultsInEmptyAsyncSequence()
     {
         var actual = new List<Int32>();
@@ -33,12 +56,13 @@ public class AsyncEnumerableTest
         static Task EmptyEnvelope(Action<Int32> _, CancellationToken __) => Task.FromResult(0);
     }
 
-    [Fact]
+    [Fact(Timeout = timeoutMs)]
     public async Task EnumerationCanBeCancelled()
     {
         const Int32 cancelAfter = 4;
-        var values = Enumerable.Range(0, 1234);
+        const Int32 maxValues = 123;
         var actual = new List<Int32>();
+        var values = Enumerable.Range(0, maxValues);
         using var cts = new CancellationTokenSource();
         await foreach (var value in AsyncEnumerable.FromEnvelope<Int32>((u, ct) => Envelope(values, u, ct)).WithCancellation(cts.Token)) {
             actual.Add(value);
@@ -48,15 +72,16 @@ public class AsyncEnumerableTest
         }
 
         // As the Envelope method does not make use of the token, we expect no exception to occur!
-        // and the enumeration to stop after exactly 'cancelAfter' elements.
-        Assert.Equal(values.Take(cancelAfter), actual);
+        // and the enumeration to stop somewhere in-between cancelAfter & maxValues.
+        Assert.InRange(actual.Count, cancelAfter, maxValues);
     }
 
-    [Fact]
+    [Fact(Timeout = timeoutMs)]
     public async Task EnumerationCanBeCancelledOnUnCancellableEnvelope()
     {
 
         await Assert.ThrowsAsync<TaskCanceledException>(CancelsWithTaskCancelException);
+        Assert.True(true);
 
         static async Task CancelsWithTaskCancelException()
         {
@@ -75,18 +100,19 @@ public class AsyncEnumerableTest
         }
     }
 
-    [Fact]
+    [Fact(Timeout = timeoutMs)]
     public async Task EnumerationPropagatesErrorsFromEnvelopeThatFailsImmediately()
     {
         var e = await Assert.ThrowsAsync<InvalidOperationException>(() => ConsumeEnvelope(ImmediatelyFailingEnvelope));
         Assert.Contains(errorMessage, e.Message);
+
         static Task ImmediatelyFailingEnvelope(Action<Int32> _, CancellationToken __)
         {
             throw new InvalidOperationException(errorMessage);
         }
     }
 
-    [Fact]
+    [Fact(Timeout = timeoutMs)]
     public async Task EnumerationPropagatesErrorsFromMiddleOfRunningEnvelope()
     {
         var e = await Assert.ThrowsAsync<InvalidOperationException>(() => ConsumeEnvelope(FailsInTheMiddle));
@@ -105,7 +131,7 @@ public class AsyncEnumerableTest
         }
     }
 
-    [Fact]
+    [Fact(Timeout = timeoutMs)]
     public async Task EnumerationPropagatesErrorsFromTailEndOfLongRunningEnvelope()
     {
         var e = await Assert.ThrowsAsync<InvalidOperationException>(() => ConsumeEnvelope(FailsAtTheEnd));

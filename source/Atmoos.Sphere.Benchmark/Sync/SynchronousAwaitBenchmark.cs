@@ -32,6 +32,6 @@ WarmupCount=5
 
 | Method              | Mean     | Error    | Ratio | Allocated | Alloc Ratio |
 |-------------------- |---------:|---------:|------:|----------:|------------:|
-| AsyncAwaitTaskDelay | 63.71 ms | 0.551 ms |  1.00 |     464 B |        1.00 |
-| SyncAwaitTaskDelay  | 63.34 ms | 0.350 ms |  1.00 |     360 B |        0.78 |
+| AsyncAwaitTaskDelay | 63.86 ms | 0.248 ms |  1.00 |     464 B |        1.00 |
+| SyncAwaitTaskDelay  | 63.97 ms | 0.197 ms |  1.00 |     360 B |        0.78 |
 Summary */

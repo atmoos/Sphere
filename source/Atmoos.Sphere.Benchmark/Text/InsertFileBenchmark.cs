@@ -51,6 +51,6 @@ WarmupCount=5
 
 | Method               | Mean       | Error     | Ratio | Gen0   | Allocated | Alloc Ratio |
 |--------------------- |-----------:|----------:|------:|-------:|----------:|------------:|
-| InsertSynchronously  |   286.2 μs |  11.55 μs |  0.21 | 1.4648 | 126.27 KB |        0.34 |
-| InsertAsynchronously | 1,362.1 μs | 277.08 μs |  1.00 | 3.9063 | 367.65 KB |        1.00 |
+| InsertSynchronously  |   269.4 μs |  11.90 μs |  0.22 | 1.4648 | 126.26 KB |        0.34 |
+| InsertAsynchronously | 1,290.6 μs | 385.05 μs |  1.00 | 3.9063 | 367.64 KB |        1.00 |
 Summary */

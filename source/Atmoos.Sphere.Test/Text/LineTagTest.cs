@@ -55,6 +55,14 @@ public class LineTagTest
     }
 
     [Fact]
+    public void CSharpRegionIsCorrect()
+    {
+        var code = CSharp.Region("SomeName");
+        var expected = new LineTag { Start = "#region SomeName", End = "#endregion" };
+        Assert.Equal(expected, code);
+    }
+
+    [Fact]
     public void DeconstructingLineTagsDeconstructsIntoConstituents()
     {
         var expected = (start: "Start", end: "End");

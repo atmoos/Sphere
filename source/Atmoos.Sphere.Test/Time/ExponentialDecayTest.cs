@@ -31,12 +31,12 @@ public class ExponentialDecayTest
         const Double factor = 2;
         const Int32 iterations = 5;
         var timeout = TimeSpan.FromMilliseconds(2);
-        var actualStates = new List<TimeSpan>(iterations);
-        var expectedStates = new List<TimeSpan>(iterations);
+        var actualStates = new List<(TimeSpan, Int32)>(iterations);
+        var expectedStates = new List<(TimeSpan, Int32)>(iterations);
         var decay = ExponentialDecay.StartNew(timeout, decayFactor: factor);
         for (Int32 exponent = 0; exponent < iterations; ++exponent) {
-            actualStates.Add(await decay);
-            expectedStates.Add(Math.Pow(factor, exponent) * timeout);
+            actualStates.Add((await decay, decay.Iteration));
+            expectedStates.Add((Math.Pow(factor, exponent) * timeout, exponent));
         }
 
         Assert.Equal(expectedStates, actualStates);
