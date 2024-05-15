@@ -53,24 +53,16 @@ public class ExtensionsTest
     [Fact]
     public async Task InCompletionOrder_OnTimeOrderedTasks_PropagatesExceptions()
     {
-        const Int32 count = 11;
-        const Int32 indexOfFaultyTask = count / 2 + 1;
-        List<Task<Int32>> unorderedTasks = new List<Task<Int32>>(count);
-        Int32 index;
-        for (index = 0; index < indexOfFaultyTask; ++index) {
-            unorderedTasks.Add(IdentifiableDelay(30 + index, 1));
-        }
-        unorderedTasks.Add(DelayedFailingTask(50));
-        for (index = indexOfFaultyTask + 1; index < count; ++index) {
-            unorderedTasks.Add(IdentifiableDelay(70 + index, 1));
-        }
-        unorderedTasks.Reverse();
-        index = 0;
-        String throws = "Throw";
-        String noThrows = "No Throw";
+        const Int32 count = 7;
+        const Int32 delayScaling = 30;
+        const Int32 indexOfFaultyTask = 2 * count / 3 + 1;
+        var (throws, noThrows) = ("Throw", "No Throw");
+        var unorderedTasks = Enumerable.Range(0, count).Select(id => IdentifiableDelay(id, delayScaling)).ToArray();
+        unorderedTasks[indexOfFaultyTask] = DelayedFailingTask(delayScaling * (indexOfFaultyTask + 1));
+
         List<String> actualNews = [];
         List<String> expectedNews = [];
-        foreach (Task<Int32> orderedTask in unorderedTasks.OrderByCompletion()) {
+        foreach (Task<Int32> orderedTask in unorderedTasks.Shuffle().OrderByCompletion()) {
             expectedNews.Add(noThrows);
             try {
                 await orderedTask;
@@ -79,7 +71,6 @@ public class ExtensionsTest
             catch (InvalidOperationException) {
                 actualNews.Add(throws);
             }
-            index++;
         }
         expectedNews[indexOfFaultyTask] = throws;
         Assert.Equal(expectedNews, actualNews);
@@ -89,38 +80,30 @@ public class ExtensionsTest
     public async Task InCompletionOrder_OnTimeOrderedTasks_PropagatesCancellation()
     {
         const Int32 count = 11;
-        const Int32 indexOfCancelingTask = count / 2 + 1;
-        using (CancellationTokenSource cancellation = new CancellationTokenSource()) {
-            List<Task<Int32>> unorderedTasks = new List<Task<Int32>>(count);
-            Int32 index;
-            for (index = 0; index < indexOfCancelingTask; ++index) {
-                unorderedTasks.Add(IdentifiableDelay(30 + index, 1));
+        const Int32 delayScaling = 20;
+        const Int32 indexOfCancelingTask = 3 * count / 5 + 1;
+        var (cancels, completes) = ("cancelled", "completes");
+        using var cancellation = new CancellationTokenSource();
+        var unorderedTasks = Enumerable.Range(0, count).Select(id => IdentifiableDelay(id, delayScaling)).ToArray();
+        unorderedTasks[indexOfCancelingTask] = DelayedCancellingTask(300, cancellation.Token);
+
+        List<String> actualNews = [];
+        List<String> expectedNews = [];
+        foreach (var (index, orderedTask) in unorderedTasks.Shuffle().OrderByCompletion().Select((t, i) => (i, t))) {
+            if (index == indexOfCancelingTask) {
+                cancellation.Cancel();
             }
-            unorderedTasks.Add(DelayedCancellingTask(200, cancellation.Token));
-            for (index = indexOfCancelingTask + 1; index < count; ++index) {
-                unorderedTasks.Add(IdentifiableDelay(70 + index, 1));
+            expectedNews.Add(completes);
+            try {
+                await orderedTask;
+                actualNews.Add(completes);
             }
-            unorderedTasks.Reverse();
-            index = 0;
-            cancellation.CancelAfter(50);
-            String cancels = "cancelled";
-            String completes = "completed";
-            List<String> actualNews = [];
-            List<String> expectedNews = [];
-            foreach (Task<Int32> orderedTask in unorderedTasks.OrderByCompletion()) {
-                expectedNews.Add(completes);
-                try {
-                    await orderedTask;
-                    actualNews.Add(completes);
-                }
-                catch (TaskCanceledException) {
-                    actualNews.Add(cancels);
-                }
-                index++;
+            catch (TaskCanceledException) {
+                actualNews.Add(cancels);
             }
-            expectedNews[indexOfCancelingTask] = cancels;
-            Assert.Equal(expectedNews, actualNews);
         }
+        expectedNews[indexOfCancelingTask] = cancels;
+        Assert.Equal(expectedNews, actualNews);
     }
 
     [Fact]
