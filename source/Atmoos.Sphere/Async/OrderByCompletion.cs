@@ -1,8 +1,8 @@
-﻿using System.Collections;
+﻿using Atmoos.Sphere.Collections;
 
 namespace Atmoos.Sphere.Async;
 
-internal sealed class OrderByCompletion<T>(Task<T>[] unorderedTasks) : IEnumerable<Task<T>>
+internal sealed class OrderByCompletion<T>(Task<T>[] unorderedTasks) : IEnumerableConvenience<Task<T>>
 {
     public IEnumerator<Task<T>> GetEnumerator()
     {
@@ -11,8 +11,6 @@ internal sealed class OrderByCompletion<T>(Task<T>[] unorderedTasks) : IEnumerab
         }
         return new Completion(unorderedTasks).Tasks;
     }
-
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     private sealed class Completion
     {
