@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Numerics;
 
 namespace Atmoos.Sphere.Collections;
@@ -19,6 +20,13 @@ public static class Extensions
         T antecedent = enumerator.Current;
         while (enumerator.MoveNext()) {
             yield return function(antecedent, antecedent = enumerator.Current);
+        }
+    }
+
+    public static IEnumerable<T> Consume<T>(this IProducerConsumerCollection<T> values)
+    {
+        while (values.TryTake(out var value)) {
+            yield return value;
         }
     }
 }
