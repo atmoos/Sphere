@@ -54,8 +54,9 @@ public static class AsyncEnumerable
         var envelopeTask = envelope(Listen, token);
         while (!envelopeTask.IsCompleted && !token.IsCancellationRequested) {
             using (token.Register(() => incoming.TrySetCanceled())) {
-                await (await Task.WhenAny(envelopeTask, incoming.Task).ConfigureAwait(None)).ConfigureAwait(None);
+                var some = await Task.WhenAny(envelopeTask, incoming.Task).ConfigureAwait(None);
                 Interlocked.Exchange(ref incoming, new TaskCompletionSource<Int32>());
+                await some.ConfigureAwait(None);
             }
             foreach (var item in queue.Consume()) {
                 yield return item;
@@ -64,6 +65,9 @@ public static class AsyncEnumerable
         if (token.IsCancellationRequested && !envelopeTask.IsCompleted) {
             await envelopeTask.With(cancellationTimeout, CancellationToken.None).ConfigureAwait(None);
             yield break;
+        }
+        foreach (var item in queue) {
+            yield return item;
         }
         await envelopeTask.ConfigureAwait(None);
 

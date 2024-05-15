@@ -11,14 +11,35 @@ public class AsyncEnumerableTest
     [Fact(Timeout = timeoutMs)]
     public async Task SequenceOrderIsPreserved()
     {
-        Int32[] expected = [9, 1, 3, 2, -3, 5];
         var actual = new List<Int32>();
+        Int32[] expected = [9, 1, 3, 2, -3, 5];
 
         await foreach (var value in AsyncEnumerable.FromEnvelope<Int32>((u, ct) => Envelope(expected, u, ct))) {
             actual.Add(value);
         }
 
         Assert.Equal(expected, actual);
+    }
+
+    [Fact(Timeout = timeoutMs)]
+    public async Task FromEnvelopeIsCompatibleWithSynchronouslyImplementedEnvelopes()
+    {
+        var actual = new List<Int32>();
+        Int32[] expected = [3, 1, 4, 5];
+
+        await foreach (var value in AsyncEnumerable.FromEnvelope<Int32>((u, ct) => SynchronousEnvelopeAsVeryBadExample(expected, u, ct))) {
+            actual.Add(value);
+        }
+
+        Assert.Equal(expected, actual);
+
+        static Task SynchronousEnvelopeAsVeryBadExample<T>(IEnumerable<T> values, Action<T> update, CancellationToken _)
+        {
+            foreach (var value in values) {
+                update(value);
+            }
+            return Task.CompletedTask;
+        }
     }
 
     [Fact(Timeout = timeoutMs)]
