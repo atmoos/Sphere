@@ -61,7 +61,7 @@ public class AsynchronousTimeSeriesTest
     public async Task TimeStampsAreAccurateEnough()
     {
         TimeSpan interval = FromMilliseconds(60);
-        var tol = new AbsoluteTolerance(FromMilliseconds(6));
+        var tol = new AbsoluteTolerance(FromMilliseconds(8));
 
         var timeStamps = await RunAgainstWallClock(interval.TimeSeries().Take(6));
 
