@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using Atmoos.Sphere.Collections;
 
 namespace Atmoos.Sphere.Test.Collections;
@@ -55,5 +56,29 @@ public class ExtensionsTest
         var actual = data.Window((a, b) => $"{a}{b}").ToArray();
 
         Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void ConsumedQueueIsEmpty()
+    {
+        const Int32 count = 20;
+        var queue = new Queue<Int32>(Enumerable.Range(0, count));
+
+        var consumedElements = queue.Consume().ToArray();
+
+        Assert.Empty(queue);
+        Assert.Equal(count, consumedElements.Length);
+    }
+
+    [Fact]
+    public void ConsumedProducerConsumerIsEmpty()
+    {
+        const Int32 count = 20;
+        IProducerConsumerCollection<Int32> producerConsumer = new ConcurrentBag<Int32>(Enumerable.Range(0, count));
+
+        var consumedElements = producerConsumer.Consume().ToArray();
+
+        Assert.Empty(producerConsumer);
+        Assert.Equal(count, consumedElements.Length);
     }
 }

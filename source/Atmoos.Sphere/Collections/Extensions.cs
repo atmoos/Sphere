@@ -23,6 +23,13 @@ public static class Extensions
         }
     }
 
+    public static IEnumerable<T> Consume<T>(this Queue<T> values)
+    {
+        while (values.TryDequeue(out var value)) {
+            yield return value;
+        }
+    }
+
     public static IEnumerable<T> Consume<T>(this IProducerConsumerCollection<T> values)
     {
         while (values.TryTake(out var value)) {
