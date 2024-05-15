@@ -89,15 +89,15 @@ LaunchCount=1  UnrollFactor=1  WarmupCount=3
 
 | Method               | MsDelay | Mean       | Error     | Ratio | Allocated | Alloc Ratio |
 |--------------------- |-------- |-----------:|----------:|------:|----------:|------------:|
-| InsertSynchronously  | 1       |   534.3 ms | 139.41 ms |  1.45 |   7.42 KB |        0.14 |
-| InsertAsynchronously | 1       |   367.6 ms |  58.39 ms |  1.00 |  51.64 KB |        1.00 |
+| InsertSynchronously  | 1       |   550.4 ms | 330.54 ms |  1.43 |   7.38 KB |        0.14 |
+| InsertAsynchronously | 1       |   384.5 ms |  85.77 ms |  1.00 |  51.75 KB |        1.00 |
 |                      |         |            |           |       |           |             |
-| InsertSynchronously  | 2       | 1,008.6 ms |  79.98 ms |  1.45 |   7.42 KB |        0.14 |
-| InsertAsynchronously | 2       |   696.4 ms |  31.52 ms |  1.00 |  51.64 KB |        1.00 |
+| InsertSynchronously  | 2       | 1,039.3 ms | 198.50 ms |  1.44 |   7.38 KB |        0.14 |
+| InsertAsynchronously | 2       |   721.1 ms |  52.39 ms |  1.00 |  51.75 KB |        1.00 |
 |                      |         |            |           |       |           |             |
-| InsertSynchronously  | 4       | 1,933.7 ms |  17.54 ms |  1.45 |   7.42 KB |        0.14 |
-| InsertAsynchronously | 4       | 1,329.4 ms |  45.18 ms |  1.00 |  51.64 KB |        1.00 |
+| InsertSynchronously  | 4       | 1,970.9 ms |  43.91 ms |  1.46 |   7.38 KB |        0.14 |
+| InsertAsynchronously | 4       | 1,350.7 ms |  31.04 ms |  1.00 |  51.75 KB |        1.00 |
 |                      |         |            |           |       |           |             |
-| InsertSynchronously  | 8       | 3,795.9 ms |  89.24 ms |  1.46 |   7.42 KB |        0.14 |
-| InsertAsynchronously | 8       | 2,602.9 ms |  63.58 ms |  1.00 |  51.64 KB |        1.00 |
+| InsertSynchronously  | 8       | 4,066.4 ms | 139.37 ms |  1.47 |   7.38 KB |        0.14 |
+| InsertAsynchronously | 8       | 2,764.5 ms | 388.46 ms |  1.00 |  51.75 KB |        1.00 |
 Summary */
