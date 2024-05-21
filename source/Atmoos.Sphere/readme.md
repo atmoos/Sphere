@@ -18,6 +18,8 @@ A library that mainly contains mechanisms, often exposed as extension methods.
 
 ## Time
 
+- Series of zero based time stamps
+  - Both as synchronous and asynchronous versions.
 - Generation of exponentially growing delays in an easy to consume asynchronous API
   - Exponential back-off comes to mind for retry mechanisms.
 
