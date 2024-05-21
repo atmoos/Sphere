@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 283.46 283.46">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#Unbenannter_Verlauf_49-2);
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4 {
+        stroke-width: 0px;
+      }
+
+      .cls-5 {
+        clip-path: url(#clippath);
+      }
+
+      .cls-2 {
+        fill: none;
+      }
+
+      .cls-3 {
+        fill: url(#Unbenannter_Verlauf_47);
+        mix-blend-mode: multiply;
+        opacity: .2;
+      }
+
+      .cls-4 {
+        fill: url(#Unbenannter_Verlauf_49);
+      }
+
+      .cls-6 {
+        isolation: isolate;
+      }
+    </style>
+    <linearGradient id="Unbenannter_Verlauf_49" data-name="Unbenannter Verlauf 49" x1="7.9" y1="-59.1" x2="234.82" y2="324.57" gradientUnits="userSpaceOnUse">
+      <stop offset=".39" stop-color="#dad553"/>
+      <stop offset=".57" stop-color="#609d46"/>
+    </linearGradient>
+    <clipPath id="clippath">
+      <circle class="cls-2" cx="125.84" cy="140.31" r="51.76"/>
+    </clipPath>
+    <linearGradient id="Unbenannter_Verlauf_47" data-name="Unbenannter Verlauf 47" x1="56.52" y1="10.23" x2="214.15" y2="276.73" gradientTransform="translate(-3.01 15.6) rotate(-2.18)" gradientUnits="userSpaceOnUse">
+      <stop offset=".24" stop-color="#c6cc54"/>
+      <stop offset=".74" stop-color="#64a048"/>
+    </linearGradient>
+    <linearGradient id="Unbenannter_Verlauf_49-2" data-name="Unbenannter Verlauf 49" x1="-64.4" y1="-374.26" x2="338.35" y2="622.59" xlink:href="#Unbenannter_Verlauf_49"/>
+  </defs>
+  <g class="cls-6">
+    <g id="Ebene_14" data-name="Ebene 14">
+      <g>
+        <circle class="cls-4" cx="125.84" cy="140.31" r="51.76"/>
+        <g class="cls-5">
+          <path class="cls-3" d="M161.49,103c1.23,4.42,1.98,9.05,2.16,13.83,1.26,33.18-24.62,61.11-57.8,62.37-4.78.18-9.45-.22-13.96-1.1,9.91,12.36,25.34,20.04,42.38,19.39,28.57-1.09,50.85-25.13,49.76-53.69-.65-17.05-9.47-31.85-22.55-40.79Z"/>
+        </g>
+        <path class="cls-1" d="M272.77,219.82l-32.43-54.34c-.18-.31-.21-.69-.07-1.02l27.25-67.77c.79-1.87-.59-3.93-2.61-3.93h-26.01c-3.05,0-5.78,1.88-6.75,4.77,0,0,0,.02,0,0-9.72,23.95-21.44,50.15-33.95,77.9-13.63,27.72-42.44,47.54-75.55,46.68-42.43-1.1-77.33-35.05-79.54-77.44-1.51-29.08,12.26-55.25,33.98-71.02.44-.32.88-.64,1.33-.95.35-.25.7-.49,1.06-.73.93-.62,1.88-1.23,2.84-1.82.09-.05.17-.11.26-.16,12.41-7.53,26.96-11.87,42.51-11.87,28.54,0,53.73,14.62,68.47,36.76,1.54,2.31,5.02,1.96,6.02-.63l.35-.91c2.6-6.87.31-31.84-19.56-48.89-5.81-4.99-16.24-10.55-25.87-13.52-5.72-1.76-17.2-4.23-25.84-4.49-.02,0-.03,0-.05,0-.7-.02-1.4-.04-2.1-.04-.29,0-.58,0-.87,0-.18,0-.36,0-.55,0-.2,0-.4,0-.6,0-.37,0-.74,0-1.11,0-.35,0-.71.02-1.06.03-.12,0-.24,0-.36,0-60.18,1.48-109.55,49.09-111.87,109.39-2.52,65.36,49.92,119.33,114.72,119.33.04,0,.08,0,.12,0,.06,0,.11,0,.17,0h0c12.92-.03,25.48-1.89,37.25-5.83,21.85-7.32,40.97-21.12,54.58-38.81,2.29-2.98,4.16-5.51,6.16-8.71.11-.18.36-.18.47,0l10.99,16.03c4.16,6.57,11.39,10.56,19.17,10.56h14.19c4.4,0,7.12-4.79,4.87-8.57Z"/>
+      </g>
+    </g>
+  </g>
+</svg>

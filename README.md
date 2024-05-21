@@ -1,3 +1,9 @@
+<!-- markdownlint-disable MD033 MD041 -->
+<div align="center">
+ <img src="./assets/images/atmoos.sphere.svg" height="160" alt="Logo">
+</div>
+<!-- markdownlint-enable MD033 MD041 -->
+
 # Atmoos.Sphere
 
 A collection of .Net mechanisms to simplify daily work as a .Net developer.
