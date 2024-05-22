@@ -6,8 +6,8 @@
   <PropertyGroup>
     <Authors>Thomas Kägi</Authors>
     <Copyright>Thomas Kägi</Copyright>
-    <PackageProjectUrl>https://github.com/atmoos/Sphere</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/atmoos/Sphere</PackageProjectUrl>
     <PackageTags>utilities, mechanisms, extension methods, extensions</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReleaseNotes>Please see: https://github.com/atmoos/Sphere/releases</PackageReleaseNotes>
@@ -17,10 +17,15 @@
 
   <ItemGroup>
     <None Include="readme.md" Pack="true" PackagePath="\" />
+    <None Include="$(OutDir)nuget.png" Pack="true" PackagePath="\icon.png" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="DotNet.ReproducibleBuilds" Version="1.1.1" PrivateAssets="All" />
   </ItemGroup>
+
+  <Target Name="CopyNugetIcon" BeforeTargets="Build">
+    <Copy SourceFiles="..\..\assets\images\nuget.png" DestinationFolder="$(OutDir)" />
+  </Target>
 
 </Project>
