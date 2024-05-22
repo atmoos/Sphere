@@ -6,8 +6,8 @@
   <PropertyGroup>
     <Authors>Thomas Kägi</Authors>
     <Copyright>Thomas Kägi</Copyright>
-    <PackageProjectUrl>https://github.com/atmoos/Sphere</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/atmoos/Sphere</PackageProjectUrl>
     <PackageTags>utilities, mechanisms, extension methods, extensions</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReleaseNotes>Please see: https://github.com/atmoos/Sphere/releases</PackageReleaseNotes>

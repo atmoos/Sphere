@@ -7,30 +7,10 @@ on:
     paths: 
       - '**/Atmoos.Sphere.BenchmarkDotNet.csproj'
 
-env:
-  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
-  DOTNET_NOLOGO: true
-  Prefix: 'sphere.benchmarkdotnet'
-  Project: 'source/Atmoos.Sphere.BenchmarkDotNet/Atmoos.Sphere.BenchmarkDotNet.csproj'
-  DotNetVersion: 8.0.x
-  NugetKey: ${{ secrets.PUSH_NEW_SPHERE_VERSION }}
-
 jobs:
-  publish:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DotNetVersion }}
-      - name: Publish
-        uses: tedd/publish-nuget-neo@v1
-        with:
-          NUGET_KEY: ${{env.NugetKey}}
-          PROJECT_FILE_PATH: ${{env.Project}}
-          TAG_COMMIT: true
-          TAG_FORMAT: ${{env.Prefix}}/v*
+  publish-sphere:
+    uses: ./.github/workflows/publish-library.yml
+    with:
+      project-path: 'source/Atmoos.Sphere.BenchmarkDotNet/Atmoos.Sphere.BenchmarkDotNet.csproj'
+      tag-prefix: 'sphere.benchmarkdotnet'
+    secrets: inherit
