@@ -13,6 +13,7 @@
     <PackageReleaseNotes>Please see: https://github.com/atmoos/Sphere/releases</PackageReleaseNotes>
     <PackageReadmeFile>readme.md</PackageReadmeFile>
     <PackageId>$(RootNamespace)</PackageId>
+    <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
