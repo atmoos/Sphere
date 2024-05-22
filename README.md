@@ -8,7 +8,8 @@
 
 A collection of .Net mechanisms to simplify daily work as a .Net developer.
 
-[![master status](https://github.com/atmoos/Sphere/actions/workflows/dotnet.yml/badge.svg)](https://github.com/atmoos/Sphere/actions/workflows/dotnet.yml)
+[![main status](https://github.com/atmoos/Sphere/actions/workflows/dotnet.yml/badge.svg)](https://github.com/atmoos/Sphere/actions/workflows/dotnet.yml)
+[![nuget package](https://img.shields.io/nuget/v/Atmoos.Sphere.svg?logo=nuget)](https://www.nuget.org/packages/Atmoos.Sphere)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/atmoos/Sphere/blob/master/LICENSE)
 
 Currently this is mostly a collection of patterns that I frequently encountered and which I was able to convert into an easy to use mechanism without introducing any dependencies to other libraries.
