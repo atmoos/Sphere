@@ -18,11 +18,20 @@ As such, this library contains very few abstractions, but many extension methods
 
 Please see the individual project's readme files for a list of mechanisms and the corresponding test projects on how to best use these mechanisms.
 
-## Focus & Goals
+## Libraries
+
+- [Atmoos.Sphere](source/Atmoos.Sphere)
+  - A collection of mechanisms predominately exposed as extension methods.
+- [Atmoos.Sphere.BenchmarkDotNet](source/Atmoos.Sphere.BenchmarkDotNet)
+  - A mechanism to export benchmark results into the corresponding benchmark source files.
+
+## High Level Focus & Goals
+
+We focus on commonly re-occurring programming patterns and offer a re-usable and *tested* version of it as a mechanism.
 
 - Wrapping "old-style" patterns into current .Net types.
 - Dealing with patterns that are easy to understand but hard to get right when taking all edge cases into account.
-- Extensive coverage with high quality tests.
-- Improving performance by creating high performance mechanisms for common patterns
+- Providing reliable patterns covered extensive by high quality tests.
+- Improving performance by creating high performance mechanisms.
 
 Essentially, an attempt to make your life easier by providing performant and rigorously tested mechanisms for commonly occurring patterns.
