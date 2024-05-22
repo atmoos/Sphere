@@ -9,6 +9,10 @@ on:
 
 jobs:
   publish-sphere-benchmarkdotnet:
+
+    permissions:
+      contents: write
+
     uses: ./.github/workflows/publish-library.yml
     with:
       project-path: 'source/Atmoos.Sphere.BenchmarkDotNet/Atmoos.Sphere.BenchmarkDotNet.csproj'
