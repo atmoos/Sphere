@@ -8,7 +8,7 @@ on:
       - '**/Atmoos.Sphere.BenchmarkDotNet.csproj'
 
 jobs:
-  publish-sphere:
+  publish-sphere-benchmarkdotnet:
     uses: ./.github/workflows/publish-library.yml
     with:
       project-path: 'source/Atmoos.Sphere.BenchmarkDotNet/Atmoos.Sphere.BenchmarkDotNet.csproj'
