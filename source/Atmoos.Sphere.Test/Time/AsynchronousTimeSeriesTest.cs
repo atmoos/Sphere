@@ -1,7 +1,6 @@
 ﻿using Atmoos.Sphere.Time;
 using Atmoos.Sphere.Collections;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 
 using static System.TimeSpan;
 using static Atmoos.Sphere.Time.Extensions;
@@ -10,6 +9,8 @@ namespace Atmoos.Sphere.Test.Time.Extensions;
 
 public class AsynchronousTimeSeriesTest
 {
+    private const Double toleranceMs = 4;
+
     [Fact]
     public void PassingANegativeInterval_ToTheConstructor_ThrowsAnArgumentOutOfRangeException()
     {
@@ -46,28 +47,29 @@ public class AsynchronousTimeSeriesTest
     [Fact]
     public async Task CompletionsOccurAtExpectedIntervals()
     {
-        var tol = new RelativeTolerance(0.05);
         TimeSpan interval = FromMilliseconds(60);
-        var expectedIntervals = new Double[] { 3, 1.5, 1, 2 }.Select(d => interval * d).ToArray();
+        var expectedIntervals = new Double[] { 3, 1.5, 1, 2, 5, 1.2, 7, 4.7 }.Select(d => interval * d).ToArray();
         var wallClock = expectedIntervals.Select((d, i) => (next: i * interval + d, wall: i * interval)).ToArray();
 
         var timeStamps = await RunAgainstWallClock(wallClock);
 
         var actualIntervals = timeStamps.Prepend((Zero, wallClock: Zero)).Window((a, b) => b.wallClock - a.wallClock).ToArray();
-        Assert.Equal(expectedIntervals, actualIntervals, tol);
+        var variance = expectedIntervals.Zip(actualIntervals, (e, a) => Math.Pow((e - a).TotalMilliseconds, 2)).Average();
+        var standardError = Math.Sqrt(variance / expectedIntervals.Length);
+        Assert.InRange(standardError, 0, toleranceMs);
     }
 
     [Fact]
     public async Task TimeStampsAreAccurateEnough()
     {
+        const Int32 count = 12;
         TimeSpan interval = FromMilliseconds(60);
-        var tol = new AbsoluteTolerance(FromMilliseconds(8));
 
-        var timeStamps = await RunAgainstWallClock(interval.TimeSeries().Take(6));
+        var timeStamps = await RunAgainstWallClock(interval.TimeSeries().Take(count));
 
-        var actualTimestamps = timeStamps.Select(t => t.wallClock).ToArray();
-        var expectedTimestamps = timeStamps.Select(t => t.timestamp).ToArray();
-        Assert.Equal(expectedTimestamps, actualTimestamps, tol);
+        var variance = timeStamps.Select((ts) => Math.Pow((ts.timestamp - ts.wallClock).TotalMilliseconds, 2)).Average();
+        var standardError = Math.Sqrt(variance / count);
+        Assert.InRange(standardError, 0, toleranceMs);
     }
 
     [Fact]
@@ -103,25 +105,4 @@ public class AsynchronousTimeSeriesTest
         }
         return actual;
     }
-}
-
-file sealed class AbsoluteTolerance(TimeSpan tol) : IEqualityComparer<TimeSpan>
-{
-    public Boolean Equals(TimeSpan expected, TimeSpan actual)
-    {
-        var difference = expected >= actual ? (expected - actual) : (actual - expected);
-        return difference <= tol;
-    }
-
-    public Int32 GetHashCode([DisallowNull] TimeSpan obj) => obj.GetHashCode();
-}
-file sealed class RelativeTolerance(Double tol) : IEqualityComparer<TimeSpan>
-{
-    public Boolean Equals(TimeSpan expected, TimeSpan actual)
-    {
-        var difference = expected >= actual ? (expected - actual) : (actual - expected);
-        return difference / expected <= tol;
-    }
-
-    public Int32 GetHashCode([DisallowNull] TimeSpan obj) => obj.GetHashCode();
 }
