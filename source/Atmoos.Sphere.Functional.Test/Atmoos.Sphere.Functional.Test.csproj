@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Atmoos.Sphere.Build.props" />
+  <Import Project="../Atmoos.Sphere.Test.props" />
+
+  <ItemGroup>
+    <ProjectReference Include="..\Atmoos.Sphere.Functional\Atmoos.Sphere.Functional.csproj" />
+  </ItemGroup>
+
+</Project>

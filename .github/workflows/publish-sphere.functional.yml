@@ -1,0 +1,20 @@
+name: Publish Atmoos.Sphere.Functional
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [ "main" ]
+    paths: 
+      - '**/Atmoos.Sphere.Functional.csproj'
+
+jobs:
+  publish-sphere-functional:
+
+    permissions:
+      contents: write
+
+    uses: ./.github/workflows/publish-new-library.yml
+    with:
+      project-path: 'source/Atmoos.Sphere/Atmoos.Sphere.csproj'
+      tag-prefix: 'sphere.functional'
+    secrets: inherit

@@ -2,6 +2,8 @@
 
 A library that mainly contains mechanisms, often exposed as extension methods.
 
+[![nuget package](https://img.shields.io/nuget/v/Atmoos.Sphere.svg?logo=nuget)](https://www.nuget.org/packages/Atmoos.Sphere)
+
 ## Async
 
 ### General Asynchronous Mechanisms
