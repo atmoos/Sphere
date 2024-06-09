@@ -153,6 +153,46 @@ public sealed class ResultTest : IFunctorLaws<String>
         Assert.Equal(expectedMessage, actualError);
     }
 
+    [Fact]
+    public void ValueFromSuccessIsTheComputedValue()
+    {
+        Int32 expectedValue = 42;
+        Result<Int32> result = expectedValue;
+
+        Int32 actualValue = result.Value(() => expectedValue - 1);
+        Assert.Equal(expectedValue, actualValue);
+    }
+
+    [Fact]
+    public void ValueFromFailureIsTheFallbackValue()
+    {
+        Int32 fallbackValue = 42;
+        Result<Int32> result = Result<Int32>.Failure("Nope.");
+
+        Int32 actualValue = result.Value(() => fallbackValue);
+        Assert.Equal(fallbackValue, actualValue);
+    }
+
+    [Fact]
+    public void ExitFromSuccessIsTheComputedValue()
+    {
+        Int32 expectedValue = -3;
+        Result<Int32> result = expectedValue;
+
+        Int32 actualValue = result.Exit();
+        Assert.Equal(expectedValue, actualValue);
+    }
+
+    [Fact]
+    public void ExitFromFailureThrows()
+    {
+        String expectedError = "No, not today.";
+        Result<Int32> result = Result<Int32>.Failure(expectedError);
+
+        var exception = Assert.Throws<InvalidDataException>(() => result.Exit(m => new InvalidDataException(m)));
+        Assert.Contains(expectedError, exception.Message);
+    }
+
     private static Result<Double> Average(IEnumerable<Int32> values)
         => Result<Double>.From<InvalidOperationException>(values.Average, _ => errorOnAverage);
     private static Result<Double> Sqrt(Double value) => value switch {

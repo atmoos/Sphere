@@ -15,5 +15,8 @@ public static class Extensions
     public static void Deconstruct<T>(this Success<(T, T)> value, out T left, out T right) => (left, right) = ((T, T))value;
     public static void Deconstruct<T>(this Success<(T, T, T)> value, out T a, out T b, out T c) => (a, b, c) = ((T, T, T))value;
     public static void Deconstruct<T>(this Success<(T, T, T, T)> value, out T a, out T b, out T c, out T d) => (a, b, c, d) = ((T, T, T, T))value;
+
+    public static T Exit<T>(this IUnwrap<T> mayThrow)
+        where T : notnull => mayThrow.Exit(message => new Exception(message));
 }
 
