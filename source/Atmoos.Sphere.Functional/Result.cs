@@ -1,7 +1,7 @@
 
 namespace Atmoos.Sphere.Functional;
 
-public abstract class Result<T> : IFunctor<T>, IEquatable<Result<T>>
+public abstract class Result<T> : IUnwrap<T>, IUnit<Result<T>, T>, IEquatable<Result<T>>
     where T : notnull
 {
     private protected Result() { }
@@ -15,11 +15,27 @@ public abstract class Result<T> : IFunctor<T>, IEquatable<Result<T>>
     public abstract Boolean Equals(Result<T>? other);
     public override Boolean Equals(Object? obj) => obj is Result<T> result && Equals(result);
     public abstract override Int32 GetHashCode();
+    protected abstract Result<T> Push(String error);
     // Monadic return
     public static implicit operator Result<T>(T value) => new Success<T>(value);
+    public static Result<T> operator +(Result<T> result, String error) => result.Push(error);
+    public static Result<T> From(Func<T> action)
+        => From<Exception>(action, exception => exception.Message);
+    public static Result<T> From<TException>(Func<T> action)
+        where TException : Exception => From<TException>(action, exception => exception.Message);
+    public static Result<T> From<TException>(Func<T> action, Func<Exception, String> onError)
+        where TException : Exception
+    {
+        try {
+            return action();
+        }
+        catch (TException exception) {
+            return new Failure<T>(onError(exception));
+        }
+    }
 }
 
-public sealed class Success<T> : Result<T>
+public sealed class Success<T> : Result<T>, IUnwrap<Success<T>, T>
     where T : notnull
 {
     private readonly T value;
@@ -30,6 +46,7 @@ public sealed class Success<T> : Result<T>
     public override T Value(Func<T> fallback) => this.value;
     public override Boolean Equals(Result<T>? other) => other is Success<T> success && this.value.Equals(success.value);
     public override Int32 GetHashCode() => this.value.GetHashCode();
+    protected override Result<T> Push(String error) => new Failure<T>(error);
 
     public static implicit operator T(Success<T> success) => success.value;
 }
@@ -54,4 +71,9 @@ public sealed class Failure<T> : Result<T>, ICountable<String>
         1 => this.errors.Peek(),
         _ => String.Join($"{Environment.NewLine}{separator}", this.errors)
     };
+    protected override Result<T> Push(String error)
+    {
+        this.errors.Push(error);
+        return this;
+    }
 }

@@ -1,6 +1,6 @@
 namespace Atmoos.Sphere.Functional;
 
-public abstract class Maybe<T> : IFunctor<T>, IEquatable<Maybe<T>>
+public abstract class Maybe<T> : IUnwrap<T>, IUnit<Maybe<T>, T>, IEquatable<Maybe<T>>
     where T : notnull
 {
     private static readonly Nothing<T> nothing = new();
@@ -28,7 +28,7 @@ public abstract class Maybe<T> : IFunctor<T>, IEquatable<Maybe<T>>
     internal static Maybe<T> Nothing => nothing;
 }
 
-public sealed class Just<T> : Maybe<T>
+public sealed class Just<T> : Maybe<T>, IUnwrap<Just<T>, T>
     where T : notnull
 {
     private readonly T value;
