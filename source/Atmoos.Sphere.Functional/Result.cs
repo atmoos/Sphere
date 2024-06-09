@@ -1,4 +1,3 @@
-
 namespace Atmoos.Sphere.Functional;
 
 /// <summary>

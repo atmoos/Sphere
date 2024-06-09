@@ -1,5 +1,3 @@
-using System.Collections;
-
 namespace Atmoos.Sphere.Functional.Test;
 
 // See: https://wiki.haskell.org/Typeclassopedia#Laws
