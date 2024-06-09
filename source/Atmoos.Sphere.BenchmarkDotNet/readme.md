@@ -1,5 +1,11 @@
 # Atmoos.Sphere.BenchmarkDotNet
 
+Exports benchmark results into the defining benchmark source files.
+
+[![nuget package](https://img.shields.io/nuget/v/Atmoos.Sphere.BenchmarkDotnet.svg?logo=nuget)](https://www.nuget.org/packages/Atmoos.Sphere.BenchmarkDotnet)
+
+## Summary
+
 This library exports your benchmark results into the corresponding benchmark source files, which can be useful to keep track of the benchmarking results as work on the project progresses.
 
 One scenario is to run all benchmarks before a release or major PR. Improvements and regressions will become visible in the diff.
