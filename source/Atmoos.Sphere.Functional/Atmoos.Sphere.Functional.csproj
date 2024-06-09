@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Atmoos.Sphere.Build.props" />
+  <Import Project="../Atmoos.Sphere.Pack.targets" />
+  
+  <PropertyGroup>
+    <Version>0.0.1</Version>
+    <PackageTags>functional programming, functors, monads</PackageTags>
+    <Description>Atmoos Sphere Functional: Functional types for C#.</Description>
+  </PropertyGroup>
+
+</Project>
