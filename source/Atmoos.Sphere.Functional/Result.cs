@@ -19,6 +19,16 @@ public abstract class Result<T> : IUnwrap<T>, IUnit<Result<T>, T>, IEquatable<Re
     // Monadic return
     public static implicit operator Result<T>(T value) => new Success<T>(value);
     public static Result<T> operator +(Result<T> result, String error) => result.Push(error);
+    public static Result<(T, T)> operator &(Result<T> left, Result<T> right) => (left, right) switch {
+        (Failure<T> lf, Failure<T> rf) => (lf + rf).Select(v => (v, v)),
+        (_, _) => left.SelectMany(l => right.Select(r => (l, r))),
+    };
+    public static Result<T> operator |(Result<T> left, Result<T> right) => (left, right) switch {
+        (Success<T>, _) => left,
+        (_, Success<T>) => right,
+        (Failure<T> lf, Failure<T> rf) => lf + rf,
+        _ => left
+    };
     public static Result<T> From(Func<T> action)
         => From<Exception>(action, exception => exception.Message);
     public static Result<T> From<TException>(Func<T> action)
@@ -66,6 +76,8 @@ public sealed class Failure<T> : Result<T>, ICountable<String>
     public override Boolean Equals(Result<T>? other) => other is Failure<T> error && ReferenceEquals(this.errors, error.errors);
     public override Int32 GetHashCode() => this.errors.GetHashCode();
     public IEnumerator<String> GetEnumerator() => this.errors.GetEnumerator();
+    public static Result<T> operator +(Failure<T> left, Failure<T> right)
+         => new Failure<T>(new Stack<String>(right.Append("-- + --").Concat(left)));
     private String ErrorMessage(String separator = "") => this.errors.Count switch {
         0 => String.Empty,
         1 => this.errors.Peek(),

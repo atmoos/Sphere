@@ -1,11 +1,31 @@
-using Atmoos.Sphere.Functional;
+namespace Atmoos.Sphere.Functional.Test;
 
-namespace Atmoos.Sphere.Test.Functional;
-
-public sealed class MaybeTest
+public sealed class MaybeTest : IFunctorLaws<String>, IEmptyFunctorLaws
 {
-    public static Maybe<Int32> Add(Maybe<Int32> left, Int32 right) => left switch {
-        Just<Int32> value => value + right,
-        _ => left
+    [Fact]
+    public void TheIdentityFunctionHasNoEffect()
+    {
+        Maybe<String> value = "Hello, World!";
+        Assert.Equal(value, value.Select(Identity));
+    }
+
+    [Theory]
+    [MemberData(nameof(Values))]
+    public void CompositionIsPreserved(String value)
+    {
+        Maybe<String> something = value;
+        Assert.Equal(something.Select(Length).Select(IsEven), something.Select(s => IsEven(Length(s))));
+    }
+
+    [Fact]
+    public void CompositionIsPreservedOnEmptyFunctor()
+    {
+        var empty = Just<String>.Nothing;
+        Assert.Same(empty.Select(Length).Select(IsEven), empty.Select(s => IsEven(Length(s))));
+    }
+
+    public static TheoryData<String> Values() => new() {
+         "uneven string",
+         "An even string",
     };
 }

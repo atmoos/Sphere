@@ -3,7 +3,6 @@ namespace Atmoos.Sphere.Functional;
 public abstract class Maybe<T> : IUnwrap<T>, IUnit<Maybe<T>, T>, IEquatable<Maybe<T>>
     where T : notnull
 {
-    private static readonly Nothing<T> nothing = new();
     private protected Maybe() { }
     public abstract Maybe<T> Where(Func<T, Boolean> predicate);
     public abstract Maybe<TResult> Select<TResult>(Func<T, TResult> selector)
@@ -24,14 +23,15 @@ public abstract class Maybe<T> : IUnwrap<T>, IUnit<Maybe<T>, T>, IEquatable<Mayb
         (_, Just<T>) => right,
         _ => left
     };
-
-    internal static Maybe<T> Nothing => nothing;
+    public static Maybe<(T, T)> operator &(Maybe<T> left, Maybe<T> right) => left.SelectMany(l => right.Select(r => (l, r)));
 }
 
 public sealed class Just<T> : Maybe<T>, IUnwrap<Just<T>, T>
     where T : notnull
 {
+    private static readonly Nothing<T> nothing = new();
     private readonly T value;
+    public static Maybe<T> Nothing => nothing;
     internal Just(T value) => this.value = value;
     public override Maybe<T> Where(Func<T, Boolean> predicate) => predicate(this.value) ? this : Nothing;
     public override Maybe<TResult> Select<TResult>(Func<T, TResult> selector) => selector(this.value);
@@ -52,8 +52,8 @@ public sealed class Nothing<T> : Maybe<T>
     private static readonly String nothing = $"No {typeof(T).Name}";
     internal Nothing() { }
     public override Maybe<T> Where(Func<T, Boolean> predicate) => this;
-    public override Maybe<TResult> Select<TResult>(Func<T, TResult> selector) => Maybe<TResult>.Nothing;
-    public override Maybe<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> selector) => Maybe<TResult>.Nothing;
+    public override Maybe<TResult> Select<TResult>(Func<T, TResult> selector) => Just<TResult>.Nothing;
+    public override Maybe<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> selector) => Just<TResult>.Nothing;
     public override T Value(Func<T> fallback) => fallback();
     public override T Exit<TError>(Func<String, TError> onNothing) => throw onNothing(nameof(Nothing<T>));
     public override Boolean Equals(Maybe<T>? other) => other is Nothing<T>;
