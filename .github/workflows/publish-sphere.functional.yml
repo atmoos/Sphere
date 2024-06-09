@@ -15,6 +15,6 @@ jobs:
 
     uses: ./.github/workflows/publish-new-library.yml
     with:
-      project-path: 'source/Atmoos.Sphere/Atmoos.Sphere.csproj'
+      project-path: 'source/Atmoos.Sphere.Functional/Atmoos.Sphere.Functional.csproj'
       tag-prefix: 'sphere.functional'
     secrets: inherit
