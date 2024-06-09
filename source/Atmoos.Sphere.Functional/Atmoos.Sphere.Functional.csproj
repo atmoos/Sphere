@@ -5,7 +5,7 @@
   <PropertyGroup>
     <Version>0.0.1</Version>
     <PackageTags>functional programming, functors, monads</PackageTags>
-    <Description>Atmoos Sphere Functional: Functional types for C#.</Description>
+    <Description>Atmoos Sphere Functional: A handful of types that support a more functional approach to C#.</Description>
   </PropertyGroup>
 
 </Project>
