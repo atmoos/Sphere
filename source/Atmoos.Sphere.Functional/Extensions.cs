@@ -12,11 +12,5 @@ public static class Extensions
     public static Result<TResult> SelectMany<T, U, TResult>(this Result<T> value, Func<T, Result<U>> selector, Func<T, U, TResult> join)
         where T : notnull where U : notnull where TResult : notnull
             => value.SelectMany(t => selector(t).Select(u => join(t, u)));
-    public static void Deconstruct<T>(this Success<(T, T)> value, out T left, out T right) => (left, right) = ((T, T))value;
-    public static void Deconstruct<T>(this Success<(T, T, T)> value, out T a, out T b, out T c) => (a, b, c) = ((T, T, T))value;
-    public static void Deconstruct<T>(this Success<(T, T, T, T)> value, out T a, out T b, out T c, out T d) => (a, b, c, d) = ((T, T, T, T))value;
-
-    public static T Exit<T>(this IUnwrap<T> mayThrow)
-        where T : notnull => mayThrow.Exit(message => new Exception(message));
 }
 

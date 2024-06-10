@@ -1,5 +1,40 @@
 namespace Atmoos.Sphere.Functional;
 
+public static class Result
+{
+    /// <summary>
+    /// Using this method is only needed when T is an interface type. Use the implicit cast operator otherwise.
+    /// </summary>
+    ///<remarks>
+    /// See <see href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/classes#15104-conversion-operators">§15.10.4</see> in the C# language specification for more information.
+    ///</remarks>
+    public static Result<T> Success<T>(T value) where T : notnull => new Success<T>(value);
+    public static Result<T> Failure<T>(String error) where T : notnull => new Failure<T>(error);
+    public static Result<T> From<T>(this T? maybe, Func<String> onNull)
+        where T : notnull => maybe ?? Failure<T>(onNull());
+    public static Result<T> From<T>(Func<T> action)
+        where T : notnull => From<T, Exception>(action, exception => exception.Message);
+    public static Result<T> From<T, TException>(Func<T> action)
+        where T : notnull where TException : Exception => From<T, TException>(action, exception => exception.Message);
+    public static Result<T> From<T, TException>(Func<T> action, Func<TException, Boolean> predicate)
+        where T : notnull where TException : Exception => From(action, predicate, exception => exception.Message);
+    public static Result<T> From<T, TException>(Func<T> action, Func<TException, String> onError)
+        where T : notnull where TException : Exception => From(action, _ => true, onError);
+    public static Result<T> From<T, TException>(Func<T> action, Func<TException, Boolean> predicate, Func<TException, String> onError)
+        where T : notnull where TException : Exception
+    {
+        try {
+            return action();
+        }
+        catch (TException exception) when (predicate(exception)) {
+            return new Failure<T>(onError(exception));
+        }
+    }
+    public static void Deconstruct<T>(this Success<(T, T)> value, out T left, out T right) => (left, right) = ((T, T))value;
+    public static void Deconstruct<T>(this Success<(T, T, T)> value, out T a, out T b, out T c) => (a, b, c) = ((T, T, T))value;
+    public static void Deconstruct<T>(this Success<(T, T, T, T)> value, out T a, out T b, out T c, out T d) => (a, b, c, d) = ((T, T, T, T))value;
+}
+
 /// <summary>
 /// A monadic result type. If something goes wrong, it will accumulate errors and return them all at once.
 /// </summary>
@@ -19,7 +54,6 @@ public abstract class Result<T> : IUnwrap<T>, IUnit<Result<T>, T>, IEquatable<Re
     public abstract T Exit<TError>(Func<String, TError> onErrors) where TError : Exception;
     /// <inheritdoc/>
     public abstract T Value(Func<T> fallback);
-    public static Result<T> Failure(String message) => new Failure<T>(message);
     public abstract Boolean Equals(Result<T>? other);
     public override Boolean Equals(Object? obj) => obj is Result<T> result && Equals(result);
     public abstract override Int32 GetHashCode();
@@ -38,20 +72,6 @@ public abstract class Result<T> : IUnwrap<T>, IUnit<Result<T>, T>, IEquatable<Re
         (Failure<T> lf, Failure<T> rf) => lf + rf,
         _ => left
     };
-    public static Result<T> From(Func<T> action)
-        => From<Exception>(action, exception => exception.Message);
-    public static Result<T> From<TException>(Func<T> action)
-        where TException : Exception => From<TException>(action, exception => exception.Message);
-    public static Result<T> From<TException>(Func<T> action, Func<Exception, String> onError)
-        where TException : Exception
-    {
-        try {
-            return action();
-        }
-        catch (TException exception) {
-            return new Failure<T>(onError(exception));
-        }
-    }
 }
 
 /// <summary>
@@ -65,9 +85,18 @@ public sealed class Success<T> : Result<T>, IUnwrap<Success<T>, T>
     public override Result<TResult> Select<TResult>(Func<T, TResult> selector) => selector(this.value);
     public override Result<TResult> SelectMany<TResult>(Func<T, Result<TResult>> selector) => selector(this.value);
     public override T Exit<TError>(Func<String, TError> onErrors) => this.value;
+
+    /// <summary>
+    /// Using this method is only needed when T is an interface type. Use the implicit cast operator otherwise.
+    /// </summary>
+    ///<remarks>
+    /// See <see href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/classes#15104-conversion-operators">§15.10.4</see> in the C# language specification for more information.
+    ///</remarks>
+    public T Value() => this.value;
     public override T Value(Func<T> fallback) => this.value;
     public override Boolean Equals(Result<T>? other) => other is Success<T> success && this.value.Equals(success.value);
     public override Int32 GetHashCode() => HashCode.Combine(this.value, typeof(Success<T>));
+    public override String ToString() => $"{nameof(Success<T>)}: {this.value}";
     protected override Result<T> Push(String error) => new Failure<T>(error);
 
     /// <inheritdoc/>
@@ -91,7 +120,7 @@ public sealed class Failure<T> : Result<T>, ICountable<String>
     public override T Exit<TError>(Func<String, TError> onFailure) => throw onFailure(ErrorMessage());
     /// <inheritdoc/>
     public override T Value(Func<T> fallback) => fallback();
-    public override String? ToString() => $"{nameof(Failure<T>)}: {ErrorMessage("- ")}";
+    public override String ToString() => $"{nameof(Failure<T>)}: {ErrorMessage("- ")}";
     public override Boolean Equals(Result<T>? other) => other is Failure<T> error && ReferenceEquals(this.errors, error.errors);
     public override Int32 GetHashCode() => HashCode.Combine(this.errors, typeof(Failure<T>));
     public IEnumerator<String> GetEnumerator() => this.errors.GetEnumerator();
