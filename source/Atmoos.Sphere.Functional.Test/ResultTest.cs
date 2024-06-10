@@ -133,7 +133,7 @@ public sealed class ResultTest : IFunctorLaws<String>
         Result<Int32> right = Result.Failure<Int32>(secondError);
 
         String[] expectedMessage = [firstError, "-- + --", secondError];
-        IEnumerable<String> actualError = Assert.IsType<Failure<Int32>>(left | right);
+        IEnumerable<String> actualError = Assert.IsType<Failure<(Int32, Int32)>>(left & right);
         Assert.Equal(expectedMessage, actualError);
     }
 
@@ -148,6 +148,57 @@ public sealed class ResultTest : IFunctorLaws<String>
 
         Failure<Double> actual = Assert.IsType<Failure<Double>>(result);
         Assert.Same(failure, actual);
+    }
+
+    [Fact]
+    void ResultFrom_CapturesErrorMessage()
+    {
+        String expectedError = "Something bad happened";
+
+        Result<Double> result = Result.From<Double>(() => throw new InvalidOperationException(expectedError));
+
+        String[] expectedErrors = [expectedError];
+        IEnumerable<String> actualErrors = Assert.IsType<Failure<Double>>(result);
+        Assert.Equal(expectedErrors, actualErrors);
+    }
+
+    [Fact]
+    void ResultFromNonNullNullableIsSuccess()
+    {
+        IList<Int32>? something = [1, 2, 3, 4, 5];
+        Result<IList<Int32>> result = something.ToResult(() => "won't be evaluated...");
+
+        Assert.IsType<Success<IList<Int32>>>(result);
+    }
+
+    [Fact]
+    void ResultFromNullNullableIsFailure()
+    {
+        IList<Int32>? nothing = null;
+        String expectedError = "No values found";
+        Result<IList<Int32>> result = nothing.ToResult(() => expectedError);
+
+        String[] expectedErrors = [expectedError];
+        var actualMessages = Assert.IsType<Failure<IList<Int32>>>(result);
+        Assert.Equal(expectedErrors, actualMessages);
+    }
+
+    [Fact]
+    void ResultFrom_OnUnexpectedExceptionStillThrows()
+    {
+        Assert.Throws<InvalidOperationException>(() => Result.From<Double, ArgumentException>(() => throw new InvalidOperationException("not an argument exception")));
+    }
+
+    [Fact]
+    void ResultFrom_WithMatchingPredicate_OnExpectedExceptionDoesNotThrow()
+    {
+        var result = Result.From<Double, ArgumentException>(() => throw new ArgumentException("This is an argument exception. But with matching predicate :-)"), _ => true);
+        IEnumerable<String> actualErrors = Assert.IsType<Failure<Double>>(result);
+    }
+    [Fact]
+    void ResultFrom_WithNonMatchingPredicate_OnExpectedExceptionStillThrows()
+    {
+        Assert.Throws<ArgumentException>(() => Result.From<Double, ArgumentException>(() => throw new ArgumentException("This is an argument exception. But predicate is false..."), _ => false));
     }
 
     private static Result<Double> Average(IEnumerable<Int32> values)

@@ -10,7 +10,7 @@ public static class Result
     ///</remarks>
     public static Result<T> Success<T>(T value) where T : notnull => new Success<T>(value);
     public static Result<T> Failure<T>(String error) where T : notnull => new Failure<T>(error);
-    public static Result<T> From<T>(this T? maybe, Func<String> onNull)
+    public static Result<T> ToResult<T>(this T? maybe, Func<String> onNull)
         where T : notnull => maybe ?? Failure<T>(onNull());
     public static Result<T> From<T>(Func<T> action)
         where T : notnull => From<T, Exception>(action, exception => exception.Message);

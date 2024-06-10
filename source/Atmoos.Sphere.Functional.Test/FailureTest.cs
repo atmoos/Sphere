@@ -10,6 +10,36 @@ public sealed class FailureTest
 
         Assert.Contains(expected, failure.ToString());
     }
+
+    [Fact]
+    public void FailureCompareFalseWhenSeparateInstances()
+    {
+        String sameErrorMessage = "Oh no!";
+        Result<Int32> left = Result.Failure<Int32>(sameErrorMessage);
+        Result<Int32> right = Result.Failure<Int32>(sameErrorMessage);
+
+        Assert.NotEqual(left, right);
+    }
+
+    [Fact]
+    public void FailureComparesFalseWhenComparedTowardSuccess()
+    {
+        Result<Int32> success = 42;
+        Result<Int32> failure = Result.Failure<Int32>("Bang!");
+
+        Assert.False(failure.Equals(success));
+    }
+
+    [Fact]
+    public void FailureComparesEqualOnlyWhenTheErrorMessagesArePropagated()
+    {
+        Result<Int32> failure = Result.Failure<Int32>("Bang!");
+        Result<Int32> otherFailureSameMessages = failure.Select(_ => 42); // Propagates the error message.
+
+        Assert.True(failure.Equals(otherFailureSameMessages));
+        Assert.NotSame(failure, otherFailureSameMessages);
+    }
+
     [Fact]
     public void ValueFromFailureIsTheFallbackValue()
     {

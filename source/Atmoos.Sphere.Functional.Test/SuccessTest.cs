@@ -37,6 +37,7 @@ public sealed class SuccessTest
 
         Assert.False(success.Equals(failure));
     }
+
     [Fact]
     public void SuccessCanImplicitlyAssignAndUnwrapStructTypes()
     {
