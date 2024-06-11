@@ -1,4 +1,4 @@
-name: Publish Library to NuGet
+name: Publish Library Update to NuGet
 
 on:
   workflow_call:

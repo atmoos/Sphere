@@ -13,7 +13,7 @@ jobs:
     permissions:
       contents: write
 
-    uses: ./.github/workflows/publish-new-library.yml
+    uses: ./.github/workflows/publish-library.yml
     with:
       project-path: 'source/Atmoos.Sphere.Functional/Atmoos.Sphere.Functional.csproj'
       tag-prefix: 'sphere.functional'
