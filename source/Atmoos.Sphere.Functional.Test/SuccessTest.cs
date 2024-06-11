@@ -134,6 +134,7 @@ public sealed class SuccessTest
         Assert.Equal(expectedValue, actualValue);
         Assert.NotEqual(fallbackValue, actualValue);
     }
+
     [Fact]
     public void ExitFromSuccessIsTheComputedValue()
     {
