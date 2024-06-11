@@ -80,34 +80,34 @@ public sealed class SuccessTest
     }
 
     [Fact]
-    public void SuccessOfHomogenousTupleCanBeDeconstructed()
+    public void SuccessOfTupleCanBeDeconstructed()
     {
-        (String left, String right) expected = ("Hello", "World");
-        Result<(String, String)> result = expected;
+        (Int32 left, String right) expected = (1, "World");
+        Result<(Int32, String)> result = expected;
 
-        Success<(String, String)> success = Assert.IsType<Success<(String, String)>>(result);
+        Success<(Int32, String)> success = Assert.IsType<Success<(Int32, String)>>(result);
         var (actualLeft, actualRight) = success;
         Assert.Equal(expected, (actualLeft, actualRight));
     }
 
     [Fact]
-    public void SuccessOfHomogenousTripleCanBeDeconstructedWhenUsingValueMethod()
+    public void SuccessOfTripleCanBeDeconstructedWhenUsingValueMethod()
     {
-        (Int32, Int32, Int32) expected = (3, 1, 2);
-        Result<(Int32, Int32, Int32)> result = expected;
+        (Int32, Int16, Int64) expected = (3, 1, 2);
+        Result<(Int32, Int16, Int64)> result = expected;
 
-        Success<(Int32, Int32, Int32)> success = Assert.IsType<Success<(Int32, Int32, Int32)>>(result);
+        Success<(Int32, Int16, Int64)> success = Assert.IsType<Success<(Int32, Int16, Int64)>>(result);
         var (actualLeft, actualCenter, actualRight) = success;
         Assert.Equal(expected, (actualLeft, actualCenter, actualRight));
     }
 
     [Fact]
-    public void SuccessOfHomogenousQuadrupleCanBeDeconstructedWhenUsingValueMethod()
+    public void SuccessOfQuadrupleCanBeDeconstructedWhenUsingValueMethod()
     {
-        (Single, Single, Single, Single) expected = (1, 2, 3, 4);
-        Result<(Single, Single, Single, Single)> result = expected;
+        (Single, Double, Byte, UInt16) expected = (1, 2, 3, 4);
+        Result<(Single, Double, Byte, UInt16)> result = expected;
 
-        Success<(Single, Single, Single, Single)> success = Assert.IsType<Success<(Single, Single, Single, Single)>>(result);
+        Success<(Single, Double, Byte, UInt16)> success = Assert.IsType<Success<(Single, Double, Byte, UInt16)>>(result);
         var (a, b, c, d) = success;
         Assert.Equal(expected, (a, b, c, d));
     }
@@ -115,12 +115,12 @@ public sealed class SuccessTest
     [Fact]
     public void SuccessOfAnyTupleCanBeDeconstructedWhenUsingValueMethod()
     {
-        (Int32 left, String right) expected = (1, "Hello");
-        Result<(Int32, String)> result = expected;
+        (Int32, String, Int64, Boolean, Byte, Double) expected = (1, "ridiculous", 3, true, 4, 5.0);
+        Result<(Int32, String, Int64, Boolean, Byte, Double)> result = expected;
 
-        Success<(Int32, String)> success = Assert.IsType<Success<(Int32, String)>>(result);
-        var (actualLeft, actualRight) = success.Value();
-        Assert.Equal(expected, (actualLeft, actualRight));
+        Success<(Int32, String, Int64, Boolean, Byte, Double)> success = Assert.IsType<Success<(Int32, String, Int64, Boolean, Byte, Double)>>(result);
+        var (a, b, c, d, e, f) = success.Value();
+        Assert.Equal(expected, (a, b, c, d, e, f));
     }
 
     [Fact]

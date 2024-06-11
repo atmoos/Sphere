@@ -30,9 +30,9 @@ public static class Result
             return new Failure<T>(onError(exception));
         }
     }
-    public static void Deconstruct<T>(this Success<(T, T)> value, out T left, out T right) => (left, right) = ((T, T))value;
-    public static void Deconstruct<T>(this Success<(T, T, T)> value, out T a, out T b, out T c) => (a, b, c) = ((T, T, T))value;
-    public static void Deconstruct<T>(this Success<(T, T, T, T)> value, out T a, out T b, out T c, out T d) => (a, b, c, d) = ((T, T, T, T))value;
+    public static void Deconstruct<T, U>(this Success<(T, U)> value, out T left, out U right) => (left, right) = value.Value();
+    public static void Deconstruct<T, U, V>(this Success<(T, U, V)> value, out T a, out U b, out V c) => (a, b, c) = value.Value();
+    public static void Deconstruct<T, U, V, W>(this Success<(T, U, V, W)> value, out T a, out U b, out V c, out W d) => (a, b, c, d) = value.Value();
 }
 
 /// <summary>
