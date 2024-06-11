@@ -59,20 +59,6 @@ public sealed class ResultTest : IFunctorLaws<String>
     }
 
     [Fact]
-    public void ErrorsAreEmittedInLiFoOrder()
-    {
-        const String firstError = "first error";
-        const String secondError = "second error";
-        const String thirdError = "third error";
-        String[] expectedErrors = [thirdError, secondError, firstError];
-
-        Result<Int32> result = Result<Int32>.Failure(firstError) + secondError + thirdError;
-
-        IEnumerable<String> actualErrors = Assert.IsType<Failure<Int32>>(result);
-        Assert.Equal(expectedErrors, actualErrors);
-    }
-
-    [Fact]
     public void ResultOrIsLeftAssociativeOnSuccesses()
     {
         Int32 expectedValue = 42;
@@ -87,7 +73,7 @@ public sealed class ResultTest : IFunctorLaws<String>
     public void ResultOrSelectsSuccessRegardlessOfOrder()
     {
         Int32 expectedValue = -12;
-        Result<Int32> failure = Result<Int32>.Failure("As long as one succeeds, we're good.");
+        Result<Int32> failure = Result.Failure<Int32>("As long as one succeeds, we're good.");
         Result<Int32> success = expectedValue;
 
         Int32 actualFailSuccess = Assert.IsType<Success<Int32>>(failure | success);
@@ -102,8 +88,8 @@ public sealed class ResultTest : IFunctorLaws<String>
         String firstError = "something went wrong";
         String secondError = "oh my!";
 
-        Result<Int32> left = Result<Int32>.Failure(firstError);
-        Result<Int32> right = Result<Int32>.Failure(secondError);
+        Result<Int32> left = Result.Failure<Int32>(firstError);
+        Result<Int32> right = Result.Failure<Int32>(secondError);
 
         String[] expectedMessage = [firstError, "-- + --", secondError];
         IEnumerable<String> actualError = Assert.IsType<Failure<Int32>>(left | right);
@@ -127,7 +113,7 @@ public sealed class ResultTest : IFunctorLaws<String>
     public void ResultAndSelectsFailureRegardlessOfOrder()
     {
         String expectedError = "Can't cope with any error.";
-        Result<Int32> failure = Result<Int32>.Failure(expectedError);
+        Result<Int32> failure = Result.Failure<Int32>(expectedError);
         Result<Int32> success = -32;
 
         String[] expectedErrors = [expectedError];
@@ -143,60 +129,84 @@ public sealed class ResultTest : IFunctorLaws<String>
         String firstError = "something went wrong";
         String secondError = "oh my!";
 
-        Result<Int32> left = Result<Int32>.Failure(firstError);
-        Result<Int32> right = Result<Int32>.Failure(secondError);
+        Result<Int32> left = Result.Failure<Int32>(firstError);
+        Result<Int32> right = Result.Failure<Int32>(secondError);
 
         String[] expectedMessage = [firstError, "-- + --", secondError];
-        IEnumerable<String> actualError = Assert.IsType<Failure<Int32>>(left | right);
+        IEnumerable<String> actualError = Assert.IsType<Failure<(Int32, Int32)>>(left & right);
         Assert.Equal(expectedMessage, actualError);
     }
 
     [Fact]
-    public void ValueFromSuccessIsTheComputedValue()
+    public void JoinOnInnerErrorJoinsBackToSameInnerFailureDiscardingTheSuccess()
     {
-        Int32 expectedValue = 42;
-        Result<Int32> result = expectedValue;
+        Result<Double> success = 42;
+        Result<Double> failure = Result.Failure<Double>("Nope.");
+        Result<Result<Double>> nestedFailures = success.Select(_ => failure);
 
-        Int32 actualValue = result.Value(() => expectedValue - 1);
-        Assert.Equal(expectedValue, actualValue);
+        Result<Double> result = nestedFailures.Join();
+
+        Failure<Double> actual = Assert.IsType<Failure<Double>>(result);
+        Assert.Same(failure, actual);
     }
 
     [Fact]
-    public void ValueFromFailureIsTheFallbackValue()
+    void ResultFrom_CapturesErrorMessage()
     {
-        Int32 fallbackValue = 42;
-        Result<Int32> result = Result<Int32>.Failure("Nope.");
+        String expectedError = "Something bad happened";
 
-        Int32 actualValue = result.Value(() => fallbackValue);
-        Assert.Equal(fallbackValue, actualValue);
+        Result<Double> result = Result.From<Double>(() => throw new InvalidOperationException(expectedError));
+
+        String[] expectedErrors = [expectedError];
+        IEnumerable<String> actualErrors = Assert.IsType<Failure<Double>>(result);
+        Assert.Equal(expectedErrors, actualErrors);
     }
 
     [Fact]
-    public void ExitFromSuccessIsTheComputedValue()
+    void ResultFromNonNullNullableIsSuccess()
     {
-        Int32 expectedValue = -3;
-        Result<Int32> result = expectedValue;
+        IList<Int32>? something = [1, 2, 3, 4, 5];
+        Result<IList<Int32>> result = something.ToResult(() => "won't be evaluated...");
 
-        Int32 actualValue = result.Exit();
-        Assert.Equal(expectedValue, actualValue);
+        Assert.IsType<Success<IList<Int32>>>(result);
     }
 
     [Fact]
-    public void ExitFromFailureThrows()
+    void ResultFromNullNullableIsFailure()
     {
-        String expectedError = "No, not today.";
-        Result<Int32> result = Result<Int32>.Failure(expectedError);
+        IList<Int32>? nothing = null;
+        String expectedError = "No values found";
+        Result<IList<Int32>> result = nothing.ToResult(() => expectedError);
 
-        var exception = Assert.Throws<InvalidDataException>(() => result.Exit(m => new InvalidDataException(m)));
-        Assert.Contains(expectedError, exception.Message);
+        String[] expectedErrors = [expectedError];
+        var actualMessages = Assert.IsType<Failure<IList<Int32>>>(result);
+        Assert.Equal(expectedErrors, actualMessages);
+    }
+
+    [Fact]
+    void ResultFrom_OnUnexpectedExceptionStillThrows()
+    {
+        Assert.Throws<InvalidOperationException>(() => Result.From<Double, ArgumentException>(() => throw new InvalidOperationException("not an argument exception")));
+    }
+
+    [Fact]
+    void ResultFrom_WithMatchingPredicate_OnExpectedExceptionDoesNotThrow()
+    {
+        var result = Result.From<Double, ArgumentException>(() => throw new ArgumentException("This is an argument exception. But with matching predicate :-)"), _ => true);
+        IEnumerable<String> actualErrors = Assert.IsType<Failure<Double>>(result);
+    }
+    [Fact]
+    void ResultFrom_WithNonMatchingPredicate_OnExpectedExceptionStillThrows()
+    {
+        Assert.Throws<ArgumentException>(() => Result.From<Double, ArgumentException>(() => throw new ArgumentException("This is an argument exception. But predicate is false..."), _ => false));
     }
 
     private static Result<Double> Average(IEnumerable<Int32> values)
-        => Result<Double>.From<InvalidOperationException>(values.Average, _ => errorOnAverage);
+        => Result.From<Double, InvalidOperationException>(values.Average, _ => errorOnAverage);
     private static Result<Double> Sqrt(Double value) => value switch {
-        < 0 => Result<Double>.Failure($"Cannot calculate the square root of a negative number: {value}"),
-        Double.NaN => Result<Double>.Failure("Cannot calculate the square root of NaN"),
-        Double.PositiveInfinity => Result<Double>.Failure("Cannot calculate the square root of Infinity"),
+        < 0 => Result.Failure<Double>($"Cannot calculate the square root of a negative number: {value}"),
+        Double.NaN => Result.Failure<Double>("Cannot calculate the square root of NaN"),
+        Double.PositiveInfinity => Result.Failure<Double>("Cannot calculate the square root of Infinity"),
         _ => Math.Sqrt(value),
     };
 
