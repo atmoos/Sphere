@@ -6,6 +6,35 @@ namespace Atmoos.Sphere.Text;
 
 public static class Extensions
 {
+    public static (Int32 value, String text) ToString(this Int32 count, String singular, String plural) => (count, count switch {
+        0 => String.Empty,
+        1 => $"one {singular}",
+        _ => $"{count} {plural}"
+    });
+
+    public static String Combine(this (Int32 count, String text) left, (Int32 count, String text) right) => (left.count, right.count) switch {
+        (0, 0) => String.Empty,
+        (_, 0) => left.text,
+        (0, _) => right.text,
+        _ => $"{left.text} and {right.text}"
+    };
+
+    public static IEnumerable<String> SplitByCase(this String value)
+    {
+        Int32 previous = 0;
+        for (Int32 i = 0; i < value.Length; i++) {
+            if (Char.IsUpper(value[i])) {
+                if (previous != i) {
+                    yield return value[previous..i];
+                }
+                previous = i;
+            }
+        }
+        if (previous < value.Length) {
+            yield return value[previous..];
+        }
+    }
+
     /// <summary>
     /// Inserts a <paramref name="section"/> of text into the <paramref name="file"/> in-between the lines marked by the <paramref name="tag"/>.
     /// </summary>
