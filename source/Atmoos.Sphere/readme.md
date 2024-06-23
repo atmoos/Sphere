@@ -34,6 +34,7 @@ A library that mainly contains mechanisms, often exposed as extension methods.
     - `TextReader` & `TextWriter` pairs
     - Insertion into an existing file, given by a `FileInfo` instance.
   - In asynchronous and synchronous variants.
+- Extension methods for string manipulation.
 
 ## Sync
 

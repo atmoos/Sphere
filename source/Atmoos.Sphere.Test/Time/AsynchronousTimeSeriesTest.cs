@@ -7,7 +7,7 @@ using static Atmoos.Sphere.Time.Extensions;
 
 namespace Atmoos.Sphere.Test.Time.Extensions;
 
-public class AsynchronousTimeSeriesTest
+public sealed class AsynchronousTimeSeriesTest
 {
     private const Double toleranceMs = 4;
 

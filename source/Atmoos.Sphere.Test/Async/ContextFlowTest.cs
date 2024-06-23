@@ -2,7 +2,7 @@ using Atmoos.Sphere.Async;
 
 namespace Atmoos.Sphere.Test.Async;
 
-public class ContextFlowTest
+public sealed class ContextFlowTest
 {
     [Fact]
     public async Task BasicContextSwitchingOnExplicitlySetContexts()

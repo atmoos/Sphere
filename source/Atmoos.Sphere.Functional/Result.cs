@@ -10,6 +10,7 @@ public static class Result
     ///</remarks>
     public static Result<T> Success<T>(T value) where T : notnull => new Success<T>(value);
     public static Result<T> Failure<T>(String error) where T : notnull => new Failure<T>(error);
+    public static Result<T> Failure<T>(IEnumerable<String> errors) where T : notnull => new Failure<T>(errors);
     public static Result<T> ToResult<T>(this T? maybe, Func<String> onNull)
         where T : notnull => maybe ?? Failure<T>(onNull());
     public static Result<T> From<T>(Func<T> action)
@@ -112,6 +113,7 @@ public sealed class Failure<T> : Result<T>, ICountable<String>
     private readonly Stack<String> errors;
     public Int32 Count => this.errors.Count;
     internal Failure(String error) : this(new Stack<String>()) => this.errors.Push(error);
+    internal Failure(IEnumerable<String> errors) : this(new Stack<String>(errors)) { }
     internal Failure(Stack<String> errors) => this.errors = errors;
     public override Result<TResult> Select<TResult>(Func<T, TResult> selector) => new Failure<TResult>(this.errors);
     public override Result<TResult> SelectMany<TResult>(Func<T, Result<TResult>> selector) => new Failure<TResult>(this.errors);

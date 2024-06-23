@@ -4,7 +4,7 @@ using static Atmoos.Sphere.Text.LineTags;
 
 namespace Atmoos.Sphere.Test.Text;
 
-public class LineTagTest
+public sealed class LineTagTest
 {
     [Fact]
     public void MarkdownHeaderIsCorrect()

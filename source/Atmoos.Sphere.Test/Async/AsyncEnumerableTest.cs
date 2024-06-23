@@ -3,7 +3,7 @@ using Atmoos.Sphere.Async;
 namespace Atmoos.Sphere.Test.Async;
 
 
-public class AsyncEnumerableTest
+public sealed class AsyncEnumerableTest
 {
     const String errorMessage = "This is some error message";
     const Int32 timeoutMs = 500;

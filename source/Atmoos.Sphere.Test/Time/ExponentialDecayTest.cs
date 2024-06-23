@@ -3,7 +3,7 @@ using Atmoos.Sphere.Time;
 
 namespace Atmoos.Sphere.Test.Time;
 
-public class ExponentialDecayTest
+public sealed class ExponentialDecayTest
 {
     [Theory]
     [InlineData(0)]

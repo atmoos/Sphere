@@ -2,7 +2,7 @@ using Atmoos.Sphere.Time;
 
 namespace Atmoos.Sphere.Test.Time.Extensions;
 
-public class SynchronousTimeSeriesTest
+public sealed class SynchronousTimeSeriesTest
 {
     [Fact]
     public void UsingIntervalOfZeroThrowsAnArgumentOutOfRangeException()

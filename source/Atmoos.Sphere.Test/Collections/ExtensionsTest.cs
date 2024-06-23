@@ -3,7 +3,7 @@ using Atmoos.Sphere.Collections;
 
 namespace Atmoos.Sphere.Test.Collections;
 
-public class ExtensionsTest
+public sealed class ExtensionsTest
 {
     [Fact]
     public void TheDifferencesOnAnEmptyCollectionIsItselfEmpty()
