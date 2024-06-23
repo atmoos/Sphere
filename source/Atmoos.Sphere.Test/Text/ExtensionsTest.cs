@@ -64,7 +64,6 @@ public sealed class ExtensionsTest
         Assert.Equal(expected, actual);
     }
 
-
     [Fact]
     public void CombineTwoNonZerosAndCombinesTheTexts()
     {
@@ -104,4 +103,3 @@ public sealed class ExtensionsTest
          { "ALL_CAPS", [ "ALL_", "CAPS" ] },
     };
 }
-

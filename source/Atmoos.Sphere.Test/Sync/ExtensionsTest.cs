@@ -3,7 +3,7 @@ using Atmoos.Sphere.Sync;
 
 namespace Atmoos.Sphere.Test.Sync;
 
-public class ExtensionsTest
+public sealed class ExtensionsTest
 {
     private static readonly TimeSpan delay = TimeSpan.FromMilliseconds(12);
 

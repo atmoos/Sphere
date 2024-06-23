@@ -1,11 +1,10 @@
-using System.Collections;
 using Atmoos.Sphere.Text;
 
 using static Atmoos.Sphere.Text.LineTags;
 
 namespace Atmoos.Sphere.Test.Text;
 
-public class TextInsertTest
+public sealed class InsertExtensionsTest
 {
     private static readonly LineTag tag = Markdown.Code("text");
     private const String toReplace = """

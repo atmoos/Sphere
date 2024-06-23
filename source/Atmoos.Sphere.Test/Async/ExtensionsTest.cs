@@ -4,7 +4,7 @@ namespace Atmoos.Sphere.Test.Async;
 
 // These tests are copied over from an old project of mine.
 // They are ok for now, but could do with a refactoring :-)
-public class ExtensionsTest
+public sealed class ExtensionsTest
 {
     [Fact]
     public async Task InCompletionOrder_OnEmptyTasks_ReturnsEmpty()
