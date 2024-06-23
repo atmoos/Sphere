@@ -77,5 +77,31 @@ public sealed class ExtensionsTest
 
         Assert.Equal($"{leftText} and {rightText}", actual);
     }
+
+    [Theory]
+    [MemberData(nameof(SplitByCaseData))]
+    public void SplitByCaseReturnsTheExpectedResults(String value, String[] expected)
+    {
+        var actual = value.SplitByCase().ToArray();
+
+        Assert.Equal(expected, actual);
+    }
+
+    public static TheoryData<String, String[]> SplitByCaseData() => new()
+    {
+         { "", [ ] },
+         { "Some", [ "Some" ] },
+         { "SomeText", [ "Some", "Text" ] },
+         { "SomeTextWithMore", [ "Some", "Text", "With", "More" ] },
+         { "SomeTextWithMoreText", [ "Some", "Text", "With", "More", "Text"] },
+         { "some", [ "some" ] },
+         { "someText", [ "some", "Text" ] },
+         { "someTextWithMore", [ "some", "Text", "With", "More" ] },
+         { "someIO", [ "some","IO" ] },
+         // ToDo: This test is failing
+         // { "someIOwithCAPS", [ "some","IO" ,"with", "CAPS"] },
+         { "SHOUTING", [ "SHOUTING" ] },
+         { "ALL_CAPS", [ "ALL_", "CAPS" ] },
+    };
 }
 

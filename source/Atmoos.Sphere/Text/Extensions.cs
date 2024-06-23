@@ -22,13 +22,14 @@ public static class Extensions
     public static IEnumerable<String> SplitByCase(this String value)
     {
         Int32 previous = 0;
+        Boolean previousIsLower = true;
         for (Int32 i = 0; i < value.Length; i++) {
-            if (Char.IsUpper(value[i])) {
-                if (previous != i) {
-                    yield return value[previous..i];
-                }
+            Boolean isUpper = Char.IsUpper(value[i]);
+            if (isUpper && previous != i && previousIsLower) {
+                yield return value[previous..i];
                 previous = i;
             }
+            previousIsLower = !isUpper;
         }
         if (previous < value.Length) {
             yield return value[previous..];
