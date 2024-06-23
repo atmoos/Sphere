@@ -83,4 +83,27 @@ public sealed class FailureTest
         Failure<Int32> actualErrors = Assert.IsType<Failure<Int32>>(result);
         Assert.Equal(expectedErrors, actualErrors);
     }
+
+    [Fact]
+    public void ErrorCanBeInstantiatedWithMultipleErrors()
+    {
+        String[] bunchOfErrors = ["first error", "second error", "third error"];
+
+        Result<Int32> result = Result.Failure<Int32>(bunchOfErrors);
+
+        Failure<Int32> actualErrors = Assert.IsType<Failure<Int32>>(result);
+        Assert.Equal(bunchOfErrors.Reverse(), actualErrors); // Reversed because of LiFo order.
+    }
+
+    [Fact]
+    public void LastErrorAddedIsFirstInSequenceOfErrorsWhenInstantiatedWithManyInitialErrors()
+    {
+        String lastError = "last error";
+        String[] bunchOfErrors = ["first error", "second error", "third error"];
+
+        Result<Int32> result = Result.Failure<Int32>(bunchOfErrors) + lastError;
+
+        Failure<Int32> actualErrors = Assert.IsType<Failure<Int32>>(result);
+        Assert.Equal(lastError, actualErrors.First());
+    }
 }
