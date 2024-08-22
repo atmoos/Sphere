@@ -3,14 +3,14 @@
   <Import Project="../Atmoos.Sphere.Pack.targets" />
   
   <PropertyGroup>
-    <Version>0.1.4</Version>
+    <Version>0.1.5</Version>
     <PackageTags>benchmark, benchmarking, export benchmark results</PackageTags>
     <Description>Atmoos Sphere BenchmarkDotNet:Exports benchmark results into the defining benchmark source files.</Description>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Atmoos.Sphere" Version="0.3.5" />
-    <PackageReference Include="BenchmarkDotNet" Version="0.13.12" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
   </ItemGroup>
 
 </Project>
