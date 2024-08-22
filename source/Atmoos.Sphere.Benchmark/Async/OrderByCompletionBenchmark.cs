@@ -1,7 +1,7 @@
 using Atmoos.Sphere.Async;
 using BenchmarkDotNet.Attributes;
 
-namespace Atmoos.Sphere.Benchmark;
+namespace Atmoos.Sphere.Benchmark.Async;
 
 [MemoryDiagnoser]
 public class OrderByCompletionBenchmark

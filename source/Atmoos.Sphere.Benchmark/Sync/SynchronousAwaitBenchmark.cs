@@ -1,7 +1,7 @@
 using Atmoos.Sphere.Sync;
 using BenchmarkDotNet.Attributes;
 
-namespace Atmoos.Sphere.Benchmark;
+namespace Atmoos.Sphere.Benchmark.Sync;
 
 [MemoryDiagnoser]
 [ShortRunJob, WarmupCount(5), IterationCount(9)]
