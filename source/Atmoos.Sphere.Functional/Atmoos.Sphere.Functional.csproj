@@ -3,7 +3,7 @@
   <Import Project="../Atmoos.Sphere.Pack.targets" />
   
   <PropertyGroup>
-    <Version>0.0.3</Version>
+    <Version>0.1.0</Version>
     <PackageTags>functional programming, functors, monads</PackageTags>
     <Description>Atmoos Sphere Functional: A handful of types that support a more functional approach to C#.</Description>
   </PropertyGroup>
