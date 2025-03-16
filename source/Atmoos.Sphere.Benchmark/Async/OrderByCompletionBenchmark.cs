@@ -56,29 +56,29 @@ public class OrderByCompletionBenchmark
 
 /* Summary
 
-BenchmarkDotNet v0.13.12, Arch Linux
+BenchmarkDotNet v0.14.0, Arch Linux
 Intel Core i7-8565U CPU 1.80GHz (Whiskey Lake), 1 CPU, 8 logical and 4 physical cores
-.NET SDK 8.0.104
-  [Host]     : .NET 8.0.4 (8.0.424.16909), X64 RyuJIT AVX2
-  Job-QJKLMT : .NET 8.0.4 (8.0.424.16909), X64 RyuJIT AVX2
+.NET SDK 9.0.104
+  [Host]     : .NET 9.0.3 (9.0.325.11113), X64 RyuJIT AVX2
+  Job-MFPBZR : .NET 9.0.3 (9.0.325.11113), X64 RyuJIT AVX2
 
 InvocationCount=1  UnrollFactor=1  
 
-| Method                  | Count | Mean       | Error   | Ratio | Allocated  | Alloc Ratio |
-|------------------------ |------ |-----------:|--------:|------:|-----------:|------------:|
-| Unordered               | 128   |   257.4 ms | 1.55 ms |  1.00 |    1.33 KB |        0.04 |
-| OrderedByCompletion     | 128   |   257.3 ms | 1.42 ms |  1.00 |   31.63 KB |        1.00 |
-| NaiveCompletionOrdering | 128   |   257.3 ms | 1.25 ms |  1.00 |  115.42 KB |        3.65 |
-|                         |       |            |         |       |            |             |
-| Unordered               | 256   |   513.9 ms | 1.25 ms |  1.00 |    1.33 KB |        0.02 |
-| OrderedByCompletion     | 256   |   513.7 ms | 1.16 ms |  1.00 |   61.38 KB |        1.00 |
-| NaiveCompletionOrdering | 256   |   513.8 ms | 1.03 ms |  1.00 |  361.45 KB |        5.89 |
-|                         |       |            |         |       |            |             |
-| Unordered               | 512   | 1,023.3 ms | 0.81 ms |  1.00 |    1.33 KB |        0.01 |
-| OrderedByCompletion     | 512   | 1,023.4 ms | 0.62 ms |  1.00 |  121.13 KB |        1.00 |
-| NaiveCompletionOrdering | 512   | 1,023.7 ms | 1.42 ms |  1.00 | 1233.38 KB |       10.18 |
-|                         |       |            |         |       |            |             |
-| Unordered               | 1024  | 2,045.2 ms | 0.83 ms |  1.00 |    1.33 KB |       0.005 |
-| OrderedByCompletion     | 1024  | 2,045.5 ms | 2.98 ms |  1.00 |  241.76 KB |       1.000 |
-| NaiveCompletionOrdering | 1024  | 2,047.0 ms | 1.83 ms |  1.00 |  4512.4 KB |      18.665 |
+| Method                  | Count | Mean       | Error   | Ratio | Gen0      | Gen1      | Allocated  | Alloc Ratio |
+|------------------------ |------ |-----------:|--------:|------:|----------:|----------:|-----------:|------------:|
+| Unordered               | 128   |   256.6 ms | 0.50 ms |  1.00 |         - |         - |    1.33 KB |        0.04 |
+| OrderedByCompletion     | 128   |   256.4 ms | 0.65 ms |  1.00 |         - |         - |   31.63 KB |        1.00 |
+| NaiveCompletionOrdering | 128   |   256.5 ms | 0.80 ms |  1.00 |         - |         - |  116.22 KB |        3.67 |
+|                         |       |            |         |       |           |           |            |             |
+| Unordered               | 256   |   512.4 ms | 0.24 ms |  1.00 |         - |         - |    1.33 KB |        0.02 |
+| OrderedByCompletion     | 256   |   512.5 ms | 0.62 ms |  1.00 |         - |         - |    61.5 KB |        1.00 |
+| NaiveCompletionOrdering | 256   |   512.7 ms | 0.44 ms |  1.00 |         - |         - |  360.01 KB |        5.85 |
+|                         |       |            |         |       |           |           |            |             |
+| Unordered               | 512   | 1,023.2 ms | 0.84 ms |  1.00 |         - |         - |    1.33 KB |        0.01 |
+| OrderedByCompletion     | 512   | 1,024.0 ms | 0.59 ms |  1.00 |         - |         - |  121.63 KB |        1.00 |
+| NaiveCompletionOrdering | 512   | 1,023.8 ms | 0.52 ms |  1.00 |         - |         - | 1229.13 KB |       10.11 |
+|                         |       |            |         |       |           |           |            |             |
+| Unordered               | 1024  | 2,048.0 ms | 1.40 ms |  1.00 |         - |         - |    1.33 KB |       0.005 |
+| OrderedByCompletion     | 1024  | 2,046.1 ms | 4.17 ms |  1.00 |         - |         - |   241.5 KB |       1.000 |
+| NaiveCompletionOrdering | 1024  | 2,047.4 ms | 1.28 ms |  1.00 | 1000.0000 | 1000.0000 |  4536.6 KB |      18.785 |
 Summary */
