@@ -21,17 +21,17 @@ public class SynchronousAwaitBenchmark
 
 /* Summary
 
-BenchmarkDotNet v0.13.12, Arch Linux
+BenchmarkDotNet v0.15.2, Linux Arch Linux
 Intel Core i7-8565U CPU 1.80GHz (Whiskey Lake), 1 CPU, 8 logical and 4 physical cores
-.NET SDK 8.0.104
-  [Host]   : .NET 8.0.4 (8.0.424.16909), X64 RyuJIT AVX2
-  ShortRun : .NET 8.0.4 (8.0.424.16909), X64 RyuJIT AVX2
+.NET SDK 9.0.109
+  [Host]   : .NET 9.0.8 (9.0.825.36511), X64 RyuJIT AVX2
+  ShortRun : .NET 9.0.8 (9.0.825.36511), X64 RyuJIT AVX2
 
 Job=ShortRun  IterationCount=9  LaunchCount=1  
 WarmupCount=5  
 
 | Method              | Mean     | Error    | Ratio | Allocated | Alloc Ratio |
 |-------------------- |---------:|---------:|------:|----------:|------------:|
-| AsyncAwaitTaskDelay | 63.86 ms | 0.248 ms |  1.00 |     464 B |        1.00 |
-| SyncAwaitTaskDelay  | 63.97 ms | 0.197 ms |  1.00 |     360 B |        0.78 |
+| AsyncAwaitTaskDelay | 63.14 ms | 0.074 ms |  1.00 |     336 B |        1.00 |
+| SyncAwaitTaskDelay  | 63.19 ms | 0.147 ms |  1.00 |     232 B |        0.69 |
 Summary */
