@@ -40,17 +40,17 @@ public class InsertFileBenchmark
 
 /* Summary
 
-BenchmarkDotNet v0.13.12, Arch Linux
+BenchmarkDotNet v0.15.2, Linux Arch Linux
 Intel Core i7-8565U CPU 1.80GHz (Whiskey Lake), 1 CPU, 8 logical and 4 physical cores
-.NET SDK 8.0.104
-  [Host]   : .NET 8.0.4 (8.0.424.16909), X64 RyuJIT AVX2
-  ShortRun : .NET 8.0.4 (8.0.424.16909), X64 RyuJIT AVX2
+.NET SDK 9.0.109
+  [Host]   : .NET 9.0.8 (9.0.825.36511), X64 RyuJIT AVX2
+  ShortRun : .NET 9.0.8 (9.0.825.36511), X64 RyuJIT AVX2
 
 Job=ShortRun  IterationCount=11  LaunchCount=1  
 WarmupCount=5  
 
-| Method               | Mean       | Error     | Ratio | Gen0   | Allocated | Alloc Ratio |
-|--------------------- |-----------:|----------:|------:|-------:|----------:|------------:|
-| InsertSynchronously  |   269.4 μs |  11.90 μs |  0.22 | 1.4648 | 126.26 KB |        0.34 |
-| InsertAsynchronously | 1,290.6 μs | 385.05 μs |  1.00 | 3.9063 | 367.64 KB |        1.00 |
+| Method               | Mean       | Error    | Ratio | Gen0    | Gen1   | Allocated | Alloc Ratio |
+|--------------------- |-----------:|---------:|------:|--------:|-------:|----------:|------------:|
+| InsertSynchronously  |   557.3 μs |  2.47 μs |  0.31 | 30.2734 | 0.9766 | 126.28 KB |        0.34 |
+| InsertAsynchronously | 1,802.7 μs | 29.86 μs |  1.00 | 89.8438 |      - | 367.37 KB |        1.00 |
 Summary */
