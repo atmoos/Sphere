@@ -26,7 +26,7 @@ jobs:
         with:
           dotnet-version: ${{ env.DotNetVersion }}
       - name: Publish
-        uses: tedd/publish-nuget-neo@v2
+        uses: tedd/publish-nuget-neo@v1
         with:
           NUGET_KEY: ${{secrets.CREATENEWNUGETPACKAGE}}
           PROJECT_FILE_PATH: ${{inputs.project-path}}
