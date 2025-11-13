@@ -78,8 +78,8 @@ file sealed class SlowWriter(StringBuilder sb, TimeSpan delay) : StringWriter(sb
 
 /* Summary
 
-BenchmarkDotNet v0.15.4, Linux Arch Linux
-Intel Core i7-8565U CPU 1.80GHz (Max: 3.50GHz) (Whiskey Lake), 1 CPU, 8 logical and 4 physical cores
+BenchmarkDotNet v0.15.7, Linux Arch Linux
+Intel Core i7-8565U CPU 1.80GHz (Max: 3.99GHz) (Whiskey Lake), 1 CPU, 8 logical and 4 physical cores
 .NET SDK 9.0.110
   [Host]   : .NET 9.0.9 (9.0.9, 9.0.925.41916), X64 RyuJIT x86-64-v3
   ShortRun : .NET 9.0.9 (9.0.9, 9.0.925.41916), X64 RyuJIT x86-64-v3
@@ -87,17 +87,17 @@ Intel Core i7-8565U CPU 1.80GHz (Max: 3.50GHz) (Whiskey Lake), 1 CPU, 8 logical 
 Job=ShortRun  InvocationCount=1  IterationCount=3  
 LaunchCount=1  UnrollFactor=1  WarmupCount=3  
 
-| Method               | MsDelay | Mean       | Error     | Ratio | Allocated | Alloc Ratio |
-|--------------------- |-------- |-----------:|----------:|------:|----------:|------------:|
-| InsertSynchronously  | 1       |   470.1 ms |   4.91 ms |  1.41 |   6.66 KB |        0.13 |
-| InsertAsynchronously | 1       |   333.2 ms | 264.83 ms |  1.00 |  50.75 KB |        1.00 |
-|                      |         |            |           |       |           |             |
-| InsertSynchronously  | 2       |   933.9 ms |  11.66 ms |  1.46 |   6.66 KB |        0.13 |
-| InsertAsynchronously | 2       |   640.8 ms |   3.36 ms |  1.00 |  50.75 KB |        1.00 |
-|                      |         |            |           |       |           |             |
-| InsertSynchronously  | 4       | 1,859.1 ms |  14.31 ms |  1.46 |   6.66 KB |        0.13 |
-| InsertAsynchronously | 4       | 1,272.0 ms |   4.58 ms |  1.00 |  50.75 KB |        1.00 |
-|                      |         |            |           |       |           |             |
-| InsertSynchronously  | 8       | 3,707.8 ms |   3.44 ms |  1.46 |   6.66 KB |        0.13 |
-| InsertAsynchronously | 8       | 2,533.0 ms |   6.88 ms |  1.00 |  50.75 KB |        1.00 |
+| Method               | MsDelay | Mean       | Error    | Ratio | Allocated | Alloc Ratio |
+|--------------------- |-------- |-----------:|---------:|------:|----------:|------------:|
+| InsertSynchronously  | 1       |   495.5 ms | 16.91 ms |  1.44 |   6.66 KB |        0.13 |
+| InsertAsynchronously | 1       |   344.3 ms | 27.26 ms |  1.00 |  50.75 KB |        1.00 |
+|                      |         |            |          |       |           |             |
+| InsertSynchronously  | 2       |   958.5 ms | 31.75 ms |  1.45 |   6.66 KB |        0.13 |
+| InsertAsynchronously | 2       |   660.3 ms |  9.76 ms |  1.00 |  50.75 KB |        1.00 |
+|                      |         |            |          |       |           |             |
+| InsertSynchronously  | 4       | 1,884.0 ms | 16.50 ms |  1.46 |   6.66 KB |        0.13 |
+| InsertAsynchronously | 4       | 1,291.3 ms |  7.29 ms |  1.00 |  50.75 KB |        1.00 |
+|                      |         |            |          |       |           |             |
+| InsertSynchronously  | 8       | 3,741.4 ms | 36.57 ms |  1.46 |   6.66 KB |        0.13 |
+| InsertAsynchronously | 8       | 2,556.6 ms | 23.77 ms |  1.00 |  50.75 KB |        1.00 |
 Summary */
