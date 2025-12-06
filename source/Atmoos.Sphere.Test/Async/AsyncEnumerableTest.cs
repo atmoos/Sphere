@@ -1,4 +1,5 @@
 using Atmoos.Sphere.Async;
+using AsyncEnumerable = Atmoos.Sphere.Async.AsyncEnumerable;
 
 namespace Atmoos.Sphere.Test.Async;
 
