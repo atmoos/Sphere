@@ -56,8 +56,8 @@ public class OrderByCompletionBenchmark
 
 /* Summary
 
-BenchmarkDotNet v0.15.7, Linux Arch Linux
-Intel Core i7-8565U CPU 1.80GHz (Max: 0.40GHz) (Whiskey Lake), 1 CPU, 8 logical and 4 physical cores
+BenchmarkDotNet v0.15.8, Linux Arch Linux
+Intel Core i7-8565U CPU 1.80GHz (Max: 3.60GHz) (Whiskey Lake), 1 CPU, 8 logical and 4 physical cores
 .NET SDK 10.0.100
   [Host]     : .NET 10.0.0 (10.0.0, 42.42.42.42424), X64 RyuJIT x86-64-v3
   Job-CNUJVU : .NET 10.0.0 (10.0.0, 42.42.42.42424), X64 RyuJIT x86-64-v3
@@ -66,19 +66,19 @@ InvocationCount=1  UnrollFactor=1
 
 | Method                  | Count | Mean       | Error   | Ratio | Gen0      | Allocated | Alloc Ratio |
 |------------------------ |------ |-----------:|--------:|------:|----------:|----------:|------------:|
-| Unordered               | 128   |   256.3 ms | 0.38 ms |  1.00 |         - |     336 B |        0.01 |
-| OrderedByCompletion     | 128   |   256.6 ms | 0.50 ms |  1.00 |         - |   31360 B |        1.00 |
-| NaiveCompletionOrdering | 128   |   256.4 ms | 0.54 ms |  1.00 |         - |  115512 B |        3.68 |
+| Unordered               | 128   |   256.3 ms | 0.65 ms |  1.00 |         - |     336 B |        0.01 |
+| OrderedByCompletion     | 128   |   256.4 ms | 0.37 ms |  1.00 |         - |   31360 B |        1.00 |
+| NaiveCompletionOrdering | 128   |   256.1 ms | 0.54 ms |  1.00 |         - |  125656 B |        4.01 |
 |                         |       |            |         |       |           |           |             |
-| Unordered               | 256   |   512.5 ms | 0.64 ms |  1.00 |         - |     336 B |       0.005 |
-| OrderedByCompletion     | 256   |   512.1 ms | 0.72 ms |  1.00 |         - |   61440 B |       1.000 |
-| NaiveCompletionOrdering | 256   |   512.9 ms | 0.55 ms |  1.00 |         - |  384440 B |       6.257 |
+| Unordered               | 256   |   512.3 ms | 0.49 ms |  1.00 |         - |     336 B |       0.005 |
+| OrderedByCompletion     | 256   |   512.3 ms | 0.64 ms |  1.00 |         - |   62080 B |       1.000 |
+| NaiveCompletionOrdering | 256   |   512.3 ms | 0.60 ms |  1.00 |         - |  362368 B |       5.837 |
 |                         |       |            |         |       |           |           |             |
-| Unordered               | 512   | 1,023.3 ms | 0.44 ms |  1.00 |         - |     336 B |       0.003 |
-| OrderedByCompletion     | 512   | 1,023.9 ms | 0.59 ms |  1.00 |         - |  123392 B |       1.000 |
-| NaiveCompletionOrdering | 512   | 1,023.7 ms | 0.71 ms |  1.00 |         - | 1257656 B |      10.192 |
+| Unordered               | 512   | 1,023.3 ms | 0.74 ms |  1.00 |         - |     336 B |       0.003 |
+| OrderedByCompletion     | 512   | 1,023.7 ms | 0.60 ms |  1.00 |         - |  123520 B |       1.000 |
+| NaiveCompletionOrdering | 512   | 1,024.1 ms | 0.33 ms |  1.00 |         - | 1247088 B |      10.096 |
 |                         |       |            |         |       |           |           |             |
-| Unordered               | 1024  | 2,046.8 ms | 1.33 ms |  1.00 |         - |     336 B |       0.001 |
-| OrderedByCompletion     | 1024  | 2,048.0 ms | 1.57 ms |  1.00 |         - |  246272 B |       1.000 |
-| NaiveCompletionOrdering | 1024  | 2,047.4 ms | 1.62 ms |  1.00 | 1000.0000 | 4591816 B |      18.645 |
+| Unordered               | 1024  | 2,047.4 ms | 0.91 ms |  1.00 |         - |     336 B |       0.001 |
+| OrderedByCompletion     | 1024  | 2,047.3 ms | 1.47 ms |  1.00 |         - |  245632 B |       1.000 |
+| NaiveCompletionOrdering | 1024  | 2,047.4 ms | 1.23 ms |  1.00 | 1000.0000 | 4682208 B |      19.062 |
 Summary */
