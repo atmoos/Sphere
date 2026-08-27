@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace Atmoos.Sphere.Memory;
+﻿namespace Atmoos.Sphere.Memory;
 
 public static class AllocationFree<TItem>
     where TItem : class, new()

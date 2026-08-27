@@ -27,15 +27,9 @@ public sealed class AllocationFreeTest
         Assert.IsType<Circle>(first);
     }
 
-    private sealed class Sample
-    {
-    }
+    private sealed class Sample;
 
-    private interface IShape
-    {
-    }
+    private interface IShape;
 
-    private sealed class Circle : IShape
-    {
-    }
+    private sealed class Circle : IShape;
 }
