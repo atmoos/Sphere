@@ -1,4 +1,4 @@
-namespace Atmoos.Sphere.Functional;
+﻿namespace Atmoos.Sphere.Functional;
 
 public static class Result
 {
@@ -51,6 +51,10 @@ public abstract class Result<T> : IUnwrap<T>, IUnit<Result<T>, T>, IEquatable<Re
     public abstract Result<TResult> SelectMany<TResult>(Func<T, Result<TResult>> selector)
         where TResult : notnull;
 
+    public abstract (TResult? success, IEnumerable<String> failures) SelectMany<TOther, TResult>(Func<T, Result<TOther>> otherSelector, Func<T, TOther, TResult> resultSelector)
+        where TOther : notnull
+        where TResult : notnull;
+
     /// <inheritdoc/>
     public abstract T Exit<TError>(Func<String, TError> onErrors) where TError : Exception;
     /// <inheritdoc/>
@@ -85,6 +89,13 @@ public sealed class Success<T> : Result<T>, IUnwrap<Success<T>, T>
     internal Success(T value) => this.value = value;
     public override Result<TResult> Select<TResult>(Func<T, TResult> selector) => selector(this.value);
     public override Result<TResult> SelectMany<TResult>(Func<T, Result<TResult>> selector) => selector(this.value);
+    public override (TResult? success, IEnumerable<String> failures) SelectMany<TOther, TResult>(Func<T, Result<TOther>> otherSelector, Func<T, TOther, TResult> resultSelector)
+        where TResult : default => otherSelector(this.value) switch {
+            Failure<TOther> failure => (default, failure),
+            Success<TOther> success => (resultSelector(this.value, success), []),
+            _ => throw new InvalidOperationException("Unexpected result type")
+        };
+
     public override T Exit<TError>(Func<String, TError> onErrors) => this.value;
 
     /// <summary>
@@ -99,7 +110,6 @@ public sealed class Success<T> : Result<T>, IUnwrap<Success<T>, T>
     public override Int32 GetHashCode() => HashCode.Combine(this.value, typeof(Success<T>));
     public override String ToString() => $"{nameof(Success<T>)}: {this.value}";
     protected override Result<T> Push(String error) => new Failure<T>(error);
-
     /// <inheritdoc/>
     public static implicit operator T(Success<T> success) => success.value;
 }
@@ -117,6 +127,8 @@ public sealed class Failure<T> : Result<T>, ICountable<String>
     internal Failure(Stack<String> errors) => this.errors = errors;
     public override Result<TResult> Select<TResult>(Func<T, TResult> selector) => new Failure<TResult>(this.errors);
     public override Result<TResult> SelectMany<TResult>(Func<T, Result<TResult>> selector) => new Failure<TResult>(this.errors);
+    public override (TResult? success, IEnumerable<String> failures) SelectMany<TOther, TResult>(Func<T, Result<TOther>> otherSelector, Func<T, TOther, TResult> resultSelector)
+        where TResult : default => (default, this);
 
     /// <inheritdoc/>
     public override T Exit<TError>(Func<String, TError> onFailure) => throw onFailure(ErrorMessage());
@@ -138,4 +150,6 @@ public sealed class Failure<T> : Result<T>, ICountable<String>
         this.errors.Push(error);
         return this;
     }
+
+    internal Result<U> Propagate<U>() where U : notnull => new Failure<U>(this.errors);
 }

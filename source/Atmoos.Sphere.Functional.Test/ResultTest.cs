@@ -1,9 +1,62 @@
-namespace Atmoos.Sphere.Functional.Test;
+﻿namespace Atmoos.Sphere.Functional.Test;
 
 // See: https://wiki.haskell.org/Typeclassopedia#Laws
 public sealed class ResultTest : IFunctorLaws<String>
 {
     private const String errorOnAverage = "Sequence contains no elements";
+
+    [Fact]
+    public void FailureChainsCanBeBuiltWithLinqSyntax()
+    {
+        const String errorMessage = "Computer says no!";
+        Result<String> result = Result.Failure<String>(errorMessage);
+        var (noSuccess, errors) = from characters in result
+                                  from files in MidPoint(characters)
+                                  select Split(characters, files);
+
+        Assert.Equal(noSuccess, default);
+        Assert.Equal(errors, [errorMessage]);
+    }
+
+    [Fact]
+    public void SuccessChainsCanBeBuiltWithLinqSyntax()
+    {
+        Result<String> result = "palinDromeemorDnilap";
+        (var (prefix, suffix), _) = from characters in result
+                                    from files in MidPoint(characters)
+                                    select Split(characters, files);
+
+        var reversedSuffix = new String([.. suffix.Reverse()]);
+        Assert.Equal(prefix, reversedSuffix);
+    }
+
+    [Fact]
+    public void SuccessPipesCanBeBuilt()
+    {
+        Result<String> result = "Puff the magic dragon lives by the sea and frolics in the autumn mist in a land";
+        var foo = result | Center | (value => IsDivisibleBy(value, 3));
+
+        Boolean isDivisible = Assert.IsType<Success<Boolean>>(foo);
+        Assert.True(isDivisible);
+    }
+
+    [Fact]
+    public void FailurePipesCanBeBuilt()
+    {
+        Result<String> result = "No!";
+        var foo = result | Center | (value => IsDivisibleBy(value, 0));
+
+        IEnumerable<String> error = Assert.IsType<Failure<Boolean>>(foo);
+        Assert.Equal(["Division by zero"], error);
+    }
+
+
+    public static Int32 Center(String input) => input.Length / 2;
+    public static Result<Boolean> IsDivisibleBy(Int32 value, Int32 divisor) => divisor != 0 ? Result.Success(value % divisor == 0) : Result.Failure<Boolean>("Division by zero");
+
+    private static Result<Int32> MidPoint(String input) => input.Length / 2;
+    private static (String, String) Split(String characters, Int32 at) => (characters[..at], characters[at..]);
+
     [Fact]
     public void TheIdentityFunctionHasNoEffect()
     {
